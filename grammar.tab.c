@@ -69,14 +69,14 @@
      WORD = 258,
      QUOTED = 259,
      SEMICOLON = 260,
-     NEWLINE = 261
+     END = 261
    };
 #endif
 /* Tokens.  */
 #define WORD 258
 #define QUOTED 259
 #define SEMICOLON 260
-#define NEWLINE 261
+#define END 261
 
 
 
@@ -425,7 +425,7 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "WORD", "QUOTED", "SEMICOLON", "NEWLINE",
+  "$end", "error", "$undefined", "WORD", "QUOTED", "SEMICOLON", "END",
   "$accept", "commandline", "command", "cmd", "arguments", 0
 };
 #endif

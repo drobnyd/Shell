@@ -42,14 +42,14 @@
      WORD = 258,
      QUOTED = 259,
      SEMICOLON = 260,
-     NEWLINE = 261
+     END = 261
    };
 #endif
 /* Tokens.  */
 #define WORD 258
 #define QUOTED 259
 #define SEMICOLON 260
-#define NEWLINE 261
+#define END 261
 
 
 

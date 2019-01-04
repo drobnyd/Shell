@@ -4,7 +4,6 @@
 %}
 
 WHITESPACE[ \r\t\f\v]
-NEWLINE[\n]
 WORD[^'";# \t\n\r\f\v]+
 
 /* States when special characters are not that special anymore */
@@ -33,9 +32,13 @@ WORD[^'";# \t\n\r\f\v]+
     return QUOTED;
 }
 
-<COMMENT>{NEWLINE} {
+<COMMENT>"\n" {
     BEGIN(INITIAL); /* Comment is ended by new line */
-    return NEWLINE;
+}
+
+<COMMENT><<EOF>> {
+    BEGIN(INITIAL); /* Comment is ended by new line */
+    return END;
 }
 
 <COMMENT>. /* Do nothing, the comment is not passed any further */
@@ -53,8 +56,8 @@ WORD[^'";# \t\n\r\f\v]+
     return SEMICOLON; 
 }
 
-{NEWLINE}   {
-    return NEWLINE;
+<<EOF>>   {
+    return END;
 }
 
 "#" {

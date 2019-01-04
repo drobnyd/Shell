@@ -360,8 +360,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 15
-#define YY_END_OF_BUFFER 16
+#define YY_NUM_RULES 14
+#define YY_END_OF_BUFFER 15
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -369,11 +369,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[30] =
+static yyconst flex_int16_t yy_accept[29] =
     {   0,
-        0,    0,    0,    0,    0,    0,    0,    0,   16,    8,
-       14,   10,   13,   11,   12,    9,    7,   15,    3,    7,
-        4,    7,    6,    5,    8,   14,    1,    2,    0
+        0,    0,    0,    0,    0,    0,    0,    0,   15,    8,
+       13,   14,   12,   10,   11,    9,    7,    3,    7,    4,
+        7,    6,    5,    8,   13,    1,    2,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -413,36 +413,36 @@ static yyconst flex_int32_t yy_meta[9] =
         1,    2,    2,    2,    2,    2,    2,    1
     } ;
 
-static yyconst flex_int16_t yy_base[33] =
+static yyconst flex_int16_t yy_base[32] =
     {   0,
         0,    0,    6,   12,   18,    0,   21,   20,   19,    0,
-       15,   31,   31,   31,   31,   31,   31,   31,   31,   10,
-       31,    9,   31,   31,    0,    9,   31,   31,   31,   26,
-       28,    9
+       15,   31,   31,   31,   31,   31,   31,   31,   10,   31,
+        9,   31,   31,    0,    9,   31,   31,   31,   26,   28,
+        9
     } ;
 
-static yyconst flex_int16_t yy_def[33] =
+static yyconst flex_int16_t yy_def[32] =
     {   0,
-       29,    1,   30,   30,   30,    5,   31,   31,   29,   32,
-       29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
-       29,   29,   29,   29,   32,   29,   29,   29,    0,   29,
-       29,   29
+       28,    1,   29,   29,   29,    5,   30,   30,   28,   31,
+       28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
+       28,   28,   28,   31,   28,   28,   28,    0,   28,   28,
+       28
     } ;
 
 static yyconst flex_int16_t yy_nxt[40] =
     {   0,
-       10,   11,   12,   13,   14,   15,   16,   10,   18,   25,
-       26,   19,   28,   20,   18,   27,   26,   19,   29,   20,
-       18,   21,   24,   24,   29,   22,   17,   17,   23,   23,
-        9,   29,   29,   29,   29,   29,   29,   29,   29
+       10,   11,   12,   13,   14,   15,   16,   10,   12,   24,
+       25,   18,   27,   19,   12,   26,   25,   18,   28,   19,
+       12,   20,   23,   23,   28,   21,   17,   17,   22,   22,
+        9,   28,   28,   28,   28,   28,   28,   28,   28
     } ;
 
 static yyconst flex_int16_t yy_chk[40] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    3,   32,
-       26,    3,   22,    3,    4,   20,   11,    4,    9,    4,
-        5,    5,    8,    7,    0,    5,   30,   30,   31,   31,
-       29,   29,   29,   29,   29,   29,   29,   29,   29
+        1,    1,    1,    1,    1,    1,    1,    1,    3,   31,
+       25,    3,   21,    3,    4,   19,   11,    4,    9,    4,
+        5,    5,    8,    7,    0,    5,   29,   29,   30,   30,
+       28,   28,   28,   28,   28,   28,   28,   28,   28
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -653,7 +653,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 16 "tokens.l"
+#line 15 "tokens.l"
 
 
 #line 660 "lex.yy.c"
@@ -709,7 +709,7 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 30 )
+				if ( yy_current_state >= 29 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -741,21 +741,21 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 18 "tokens.l"
+#line 17 "tokens.l"
 { /* TODO Escaped double quotes with \' append ' to command*/
     strcat(yylval.str_val,"\'");
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 22 "tokens.l"
+#line 21 "tokens.l"
 { /* TODO Escaped double quotes with \" append " to command*/
     strcat(yylval.str_val, "\"");
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 26 "tokens.l"
+#line 25 "tokens.l"
 {
     BEGIN(INITIAL);
     return QUOTED;
@@ -763,7 +763,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 31 "tokens.l"
+#line 30 "tokens.l"
 {
     BEGIN(INITIAL);
     return QUOTED;
@@ -772,27 +772,33 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 36 "tokens.l"
+#line 35 "tokens.l"
 {
     BEGIN(INITIAL); /* Comment is ended by new line */
-    return NEWLINE;
+}
+	YY_BREAK
+case YY_STATE_EOF(COMMENT):
+#line 39 "tokens.l"
+{
+    BEGIN(INITIAL); /* Comment is ended by new line */
+    return END;
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 41 "tokens.l"
+#line 44 "tokens.l"
 /* Do nothing, the comment is not passed any further */
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 43 "tokens.l"
+#line 46 "tokens.l"
 {
    strcat(yylval.str_val,yytext);
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 47 "tokens.l"
+#line 50 "tokens.l"
 {
     yylval.str_val = strdup(yytext);
     return WORD;
@@ -800,60 +806,55 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 52 "tokens.l"
+#line 55 "tokens.l"
 {
     return SEMICOLON; 
 }
 	YY_BREAK
-case 10:
-/* rule 10 can match eol */
-YY_RULE_SETUP
-#line 56 "tokens.l"
+case YY_STATE_EOF(INITIAL):
+case YY_STATE_EOF(SINGLE_QUOTES):
+case YY_STATE_EOF(DOUBLE_QUOTES):
+#line 59 "tokens.l"
 {
-    return NEWLINE;
+    return END;
 }
 	YY_BREAK
-case 11:
+case 10:
 YY_RULE_SETUP
-#line 60 "tokens.l"
+#line 63 "tokens.l"
 {
     BEGIN(COMMENT);
 }  
 	YY_BREAK
-case 12:
+case 11:
 YY_RULE_SETUP
-#line 64 "tokens.l"
+#line 67 "tokens.l"
 {
     BEGIN(SINGLE_QUOTES);
     yylval.str_val = (char*)(malloc(sizeof(char)));
     yylval.str_val[0] = '\n';
 }   
 	YY_BREAK
-case 13:
+case 12:
 YY_RULE_SETUP
-#line 70 "tokens.l"
+#line 73 "tokens.l"
 {
     BEGIN(DOUBLE_QUOTES);
     yylval.str_val = (char*)(malloc(sizeof(char)));
     yylval.str_val[0] = '\n';
 }
 	YY_BREAK
-case 14:
+case 13:
 YY_RULE_SETUP
-#line 76 "tokens.l"
+#line 79 "tokens.l"
 /* Ignore whitespaces */
 	YY_BREAK
-case 15:
+case 14:
 YY_RULE_SETUP
-#line 78 "tokens.l"
+#line 81 "tokens.l"
 ECHO;
 	YY_BREAK
-#line 852 "lex.yy.c"
-case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(SINGLE_QUOTES):
-case YY_STATE_EOF(DOUBLE_QUOTES):
-case YY_STATE_EOF(COMMENT):
-	yyterminate();
+#line 858 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1143,7 +1144,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 30 )
+			if ( yy_current_state >= 29 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1171,11 +1172,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 30 )
+		if ( yy_current_state >= 29 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 29);
+	yy_is_jam = (yy_current_state == 28);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1848,7 +1849,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 78 "tokens.l"
+#line 81 "tokens.l"
 
 
 
