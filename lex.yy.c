@@ -769,16 +769,17 @@ YY_RULE_SETUP
     return QUOTED;
 }
 	YY_BREAK
+/* TODO line counting */
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 35 "tokens.l"
+#line 36 "tokens.l"
 {
     BEGIN(INITIAL); /* Comment is ended by new line */
 }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 39 "tokens.l"
+#line 40 "tokens.l"
 {
     BEGIN(INITIAL); /* Comment is ended by new line */
     return END;
@@ -786,19 +787,19 @@ case YY_STATE_EOF(COMMENT):
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 44 "tokens.l"
+#line 45 "tokens.l"
 /* Do nothing, the comment is not passed any further */
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 46 "tokens.l"
+#line 47 "tokens.l"
 {
    strcat(yylval.str_val,yytext);
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 50 "tokens.l"
+#line 51 "tokens.l"
 {
     yylval.str_val = strdup(yytext);
     return WORD;
@@ -806,7 +807,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 55 "tokens.l"
+#line 56 "tokens.l"
 {
     return SEMICOLON; 
 }
@@ -814,47 +815,47 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(SINGLE_QUOTES):
 case YY_STATE_EOF(DOUBLE_QUOTES):
-#line 59 "tokens.l"
+#line 60 "tokens.l"
 {
     return END;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 63 "tokens.l"
+#line 64 "tokens.l"
 {
     BEGIN(COMMENT);
 }  
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 67 "tokens.l"
+#line 68 "tokens.l"
 {
     BEGIN(SINGLE_QUOTES);
     yylval.str_val = (char*)(malloc(sizeof(char)));
-    yylval.str_val[0] = '\n';
+    yylval.str_val[0] = '\0';
 }   
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "tokens.l"
+#line 74 "tokens.l"
 {
     BEGIN(DOUBLE_QUOTES);
     yylval.str_val = (char*)(malloc(sizeof(char)));
-    yylval.str_val[0] = '\n';
+    yylval.str_val[0] = '\0';
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 79 "tokens.l"
+#line 80 "tokens.l"
 /* Ignore whitespaces */
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 81 "tokens.l"
+#line 82 "tokens.l"
 ECHO;
 	YY_BREAK
-#line 858 "lex.yy.c"
+#line 859 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1849,7 +1850,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 81 "tokens.l"
+#line 82 "tokens.l"
 
 
 

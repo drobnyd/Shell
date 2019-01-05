@@ -56,13 +56,15 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 9 "grammar.y"
+#line 11 "grammar.y"
 {
 	char *str_val;
 	int int_val;
+    struct commands_handle *commands_handle;
+    struct arguments_handle *arguments_handle;
 }
 /* Line 1529 of yacc.c.  */
-#line 66 "grammar.tab.h"
+#line 68 "grammar.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

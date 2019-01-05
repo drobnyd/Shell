@@ -85,6 +85,8 @@
 #line 1 "grammar.y"
 
     #include <stdio.h>
+    #include <string.h>
+    #include "data_structures.h"
     void yyerror(const char* msg) {
       fprintf(stderr, "%s\n", msg);
    }
@@ -111,13 +113,15 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 9 "grammar.y"
+#line 11 "grammar.y"
 {
 	char *str_val;
 	int int_val;
+    struct commands_handle *commands_handle;
+    struct arguments_handle *arguments_handle;
 }
 /* Line 193 of yacc.c.  */
-#line 121 "grammar.tab.c"
+#line 125 "grammar.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -130,7 +134,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 134 "grammar.tab.c"
+#line 138 "grammar.tab.c"
 
 #ifdef short
 # undef short
@@ -345,16 +349,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   9
+#define YYLAST   8
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  7
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  10
+#define YYNRULES  9
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  13
+#define YYNSTATES  12
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -400,23 +404,21 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     5,     8,    11,    15,    20,    22,    23,
-      26
+       0,     0,     3,     5,     8,    11,    15,    20,    21,    24
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-       8,     0,    -1,     6,    -1,     9,     6,    -1,    10,    11,
-      -1,    10,    11,     5,    -1,    10,    11,     5,     9,    -1,
-       3,    -1,    -1,    11,     3,    -1,    11,     4,    -1
+       8,     0,    -1,     6,    -1,     9,     6,    -1,     3,    10,
+      -1,     3,    10,     5,    -1,     3,    10,     5,     9,    -1,
+      -1,    10,     3,    -1,    10,     4,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    22,    22,    23,    27,    28,    29,    31,    34,    35,
-      36
+       0,    27,    27,    28,    45,    52,    59,    68,    71,    76
 };
 #endif
 
@@ -426,7 +428,7 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "WORD", "QUOTED", "SEMICOLON", "END",
-  "$accept", "commandline", "command", "cmd", "arguments", 0
+  "$accept", "commandline", "command", "arguments", 0
 };
 #endif
 
@@ -442,15 +444,13 @@ static const yytype_uint16 yytoknum[] =
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     7,     8,     8,     9,     9,     9,    10,    11,    11,
-      11
+       0,     7,     8,     8,     9,     9,     9,    10,    10,    10
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2,     2,     3,     4,     1,     0,     2,
-       2
+       0,     2,     1,     2,     2,     3,     4,     0,     2,     2
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -458,14 +458,14 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     7,     2,     0,     0,     8,     1,     3,     4,     9,
-      10,     5,     6
+       0,     7,     2,     0,     0,     4,     1,     3,     8,     9,
+       5,     6
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     3,     4,     5,     8
+      -1,     3,     4,     5
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -473,14 +473,14 @@ static const yytype_int8 yydefgoto[] =
 #define YYPACT_NINF -6
 static const yytype_int8 yypact[] =
 {
-      -3,    -6,    -6,     2,    -5,    -6,    -6,    -6,     1,    -6,
-      -6,     4,    -6
+      -3,    -6,    -6,     2,    -5,     1,    -6,    -6,    -6,    -6,
+       4,    -6
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    -2,    -6,    -6
+      -6,    -6,    -2,    -6
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -490,20 +490,20 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       1,     7,     6,     2,     9,    10,    11,     1,     0,    12
+       1,     7,     6,     2,     8,     9,    10,     1,    11
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-       3,     6,     0,     6,     3,     4,     5,     3,    -1,    11
+       3,     6,     0,     6,     3,     4,     5,     3,    10
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     6,     8,     9,    10,     0,     6,    11,     3,
-       4,     5,     9
+       0,     3,     6,     8,     9,    10,     0,     6,     3,     4,
+       5,     9
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1318,43 +1318,88 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 22 "grammar.y"
-    {printf("x"); YYACCEPT; ;}
+#line 27 "grammar.y"
+    { YYACCEPT; ;}
     break;
 
   case 3:
-#line 23 "grammar.y"
-    { printf("\n"); YYACCEPT; ;}
+#line 28 "grammar.y"
+    { 
+        // testing
+        struct command *cc;
+        struct argument *ca;
+        STAILQ_FOREACH(cc,&(yyvsp[(1) - (2)].commands_handle)->head,entries){
+            printf("cmd: %s args",cc->command_name);
+            STAILQ_FOREACH(ca,&cc->arguments_handle->head,entries){
+                printf("%s ",ca->argument_value);
+            }
+            printf("\n");
+        }
+        YYACCEPT; 
+    ;}
+    break;
+
+  case 4:
+#line 45 "grammar.y"
+    {
+        struct command *to_add = init_command();
+        to_add->command_name = strdup((yyvsp[(1) - (2)].str_val));
+        to_add->arguments_handle = (yyvsp[(2) - (2)].arguments_handle);  
+        (yyval.commands_handle) = init_command_list();
+        command_list_insert_head((yyval.commands_handle),to_add);
+    ;}
     break;
 
   case 5:
-#line 28 "grammar.y"
-    { printf(";"); ;}
+#line 52 "grammar.y"
+    { 
+        struct command *to_add = init_command();
+        to_add->command_name = strdup((yyvsp[(1) - (3)].str_val));
+        to_add->arguments_handle = (yyvsp[(2) - (3)].arguments_handle);  
+        (yyval.commands_handle) = init_command_list();
+        command_list_insert_head((yyval.commands_handle),to_add);
+    ;}
     break;
 
   case 6:
-#line 29 "grammar.y"
-    { printf(";"); ;}
+#line 59 "grammar.y"
+    {
+        struct command *to_add = init_command();
+        to_add->command_name = strdup((yyvsp[(1) - (4)].str_val));
+        to_add->arguments_handle = (yyvsp[(2) - (4)].arguments_handle);
+        command_list_insert_head((yyvsp[(4) - (4)].commands_handle),to_add);
+        (yyval.commands_handle) = (yyvsp[(4) - (4)].commands_handle);
+    ;}
     break;
 
   case 7:
-#line 31 "grammar.y"
-    { printf("%s ", (yyvsp[(1) - (1)].str_val)); ;}
+#line 68 "grammar.y"
+    { 
+        (yyval.arguments_handle) = init_argument_list();
+    ;}
+    break;
+
+  case 8:
+#line 71 "grammar.y"
+    { 
+        struct argument *to_add = init_argument();
+        to_add->argument_value = (yyvsp[(2) - (2)].str_val);
+        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle),to_add);
+    ;}
     break;
 
   case 9:
-#line 35 "grammar.y"
-    { printf("%s ", (yyvsp[(2) - (2)].str_val)); ;}
-    break;
-
-  case 10:
-#line 36 "grammar.y"
-    { printf("%s ", (yyvsp[(2) - (2)].str_val)); ;}
+#line 76 "grammar.y"
+    { 
+        struct argument *to_add = init_argument();
+        to_add->argument_value = (yyvsp[(2) - (2)].str_val);
+        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle),to_add);
+    ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1358 "grammar.tab.c"
+#line 1403 "grammar.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1568,5 +1613,5 @@ yyreturn:
 }
 
 
-#line 39 "grammar.y"
+#line 83 "grammar.y"
 

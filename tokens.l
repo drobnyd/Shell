@@ -32,6 +32,7 @@ WORD[^'";# \t\n\r\f\v]+
     return QUOTED;
 }
 
+    /* TODO line counting */
 <COMMENT>"\n" {
     BEGIN(INITIAL); /* Comment is ended by new line */
 }
@@ -67,13 +68,13 @@ WORD[^'";# \t\n\r\f\v]+
 "'" {
     BEGIN(SINGLE_QUOTES);
     yylval.str_val = (char*)(malloc(sizeof(char)));
-    yylval.str_val[0] = '\n';
+    yylval.str_val[0] = '\0';
 }   
 
 \"  {
     BEGIN(DOUBLE_QUOTES);
     yylval.str_val = (char*)(malloc(sizeof(char)));
-    yylval.str_val[0] = '\n';
+    yylval.str_val[0] = '\0';
 }
 
 {WHITESPACE}+   /* Ignore whitespaces */

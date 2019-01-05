@@ -7,9 +7,12 @@
 extern void yyparse(void);
 extern void yy_scan_string(char*);
 extern void yylex_destroy(void);
+extern 
 
 int main()
 {
+	// TODO if is called with the -c argument
+
     char* input, shell_prompt[100];
 
     // Configure readline to auto-complete paths when the tab key is hit.
@@ -34,6 +37,8 @@ int main()
 		yy_scan_string(input);
 		yyparse();
 		yylex_destroy();
+
+		// Loads commands into stack
 
 		add_history(input);
 
