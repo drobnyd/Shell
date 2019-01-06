@@ -57,7 +57,11 @@ WORD[^'";# \t\n\r\f\v]+
     return SEMICOLON; 
 }
 
-<<EOF>>   {
+\n {
+    return EOL;
+}
+
+<<EOF>>  {
     return END;
 }
 

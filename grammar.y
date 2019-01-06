@@ -20,19 +20,24 @@
 
 /* Declare tokens */ 
 %token<str_val> WORD "word"
-%token<str_val> QUOTED "\' or \""
+%token<str_val> QUOTED "quote"
 %token<int_val> SEMICOLON ";"
-%token<int_val> END "\\n or EOF"
+%token<int_val> END "EOF"
+%token<int_val> EOL "\\n"
 
 %type<commands_handle> command commandline
 %type<arguments_handle> arguments
 %%
 
-commandline: END /* Empty line is ignored */ { parsed_commands = NULL; YYACCEPT; }
-    | command END { 
+commandline: end /* Empty line is ignored */ { parsed_commands = NULL; YYACCEPT; }
+    | command end { 
         parsed_commands = $1;
         YYACCEPT; 
     } 
+    ;
+
+end: EOL 
+    | END
     ;
 
 /* Commands on a single line */

@@ -42,7 +42,8 @@
      WORD = 258,
      QUOTED = 259,
      SEMICOLON = 260,
-     END = 261
+     END = 261,
+     EOL = 262
    };
 #endif
 /* Tokens.  */
@@ -50,6 +51,7 @@
 #define QUOTED 259
 #define SEMICOLON 260
 #define END 261
+#define EOL 262
 
 
 
@@ -64,7 +66,7 @@ typedef union YYSTYPE
     struct arguments_handle *arguments_handle;
 }
 /* Line 1529 of yacc.c.  */
-#line 68 "grammar.tab.h"
+#line 70 "grammar.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

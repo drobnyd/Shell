@@ -25,6 +25,8 @@ int main(int argc, char **argv)
 		{
 			case 'c':
 				get_commands(optarg);
+				if (yyexit_value) // If error in parsing has occured, exit with value of the error
+					exit(yyexit_value);
 				execute_commands(parsed_commands);
 				internal_exit();
 			case '?':
@@ -64,6 +66,7 @@ int main(int argc, char **argv)
 }
 
 void get_commands(char *input){
+	yyexit_value = 0; // Restore parser's return value before next call
 	yy_scan_string(input);
 	yyparse();
 	yylex_destroy();
@@ -85,8 +88,10 @@ void interactive_mode_loop(){
         if (!input) // Case of ^D exit with the last value
             internal_exit();
 		get_commands(input);
-		// Execute read commands and save into parsed_commands
-		execute_commands(parsed_commands);
+		if (yyexit_value) // If error in parsing has occured, exit with value of the error
+			set_exit_value(yyexit_value);
+		else // Execute read commands and save into parsed_commands
+			execute_commands(parsed_commands);
         // Add input to history.
         add_history(input);
         // Free input.
