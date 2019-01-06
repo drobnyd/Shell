@@ -6,6 +6,7 @@
       fprintf(stderr, "%s\n", msg);
    }
    int yylex();
+   struct commands_handle *parsed_commands = NULL;
 %}
 
 %union {
@@ -23,19 +24,9 @@
 %type<arguments_handle> arguments
 %%
 
-/* TODO remove test printings */
-commandline: END /* Empty line is ignored */ { YYACCEPT; }
+commandline: END /* Empty line is ignored */ { parsed_commands = NULL; YYACCEPT; }
     | command END { 
-        /* testing
-        struct command *cc;
-        struct argument *ca;
-        STAILQ_FOREACH(cc,&$1->head,entries){
-            printf("cmd: %s args: ",cc->command_name);
-            STAILQ_FOREACH(ca,&cc->arguments_handle->head,entries){
-                printf("%s ",ca->argument_value);
-            }
-            printf("\n");
-        }*/
+        parsed_commands = $1;
         YYACCEPT; 
     } 
     ;

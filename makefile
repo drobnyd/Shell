@@ -2,7 +2,7 @@ CFLAGS = -g -Wall
 LDLIBS = -lreadline -ll
 CC = cc
 bison_name = grammar
-object_files = main.o
+object_files = main.o command_execution.o data_structures.o
 
 lex.yy.c: tokens.l
 	flex tokens.l
@@ -11,7 +11,7 @@ tokens.l: $(bison_name).tab.h
 	
 $(bison_name).tab.c: $(bison_name).tab.h
 
-mysh: lex.yy.c $(bison_name).tab.c main.o
+mysh: lex.yy.c $(bison_name).tab.c $(object_files)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
 $(bison_name).tab.h: $(bison_name).y
@@ -20,4 +20,4 @@ $(bison_name).tab.h: $(bison_name).y
 .PHONY: clean
 
 clean:
-	rm main.o mysh
+	rm $(object_files) mysh

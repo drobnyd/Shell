@@ -1,5 +1,4 @@
 #include <sys/queue.h>
-#include <stdlib.h>
 
 struct argument {
     char *argument_value;
@@ -21,40 +20,20 @@ struct commands_handle {
 };
 
 struct argument* 
-init_argument(void) {
-    struct argument *argument = (struct argument *)(malloc(sizeof(struct argument)));
-    argument->argument_value = NULL;
-    return argument;
-}
+init_argument(void);
 
 struct command* 
-init_command(void) {
-    struct command *command = (struct command *)(malloc(sizeof(struct command)));
-    command->command_name = NULL;
-    command->arguments_handle = NULL;
-    return command;
-}
+init_command(void);
+
 struct arguments_handle * 
-init_argument_list(void){
-    struct arguments_handle *arguments = (struct arguments_handle *)malloc(sizeof(struct arguments_handle *));
-    STAILQ_INIT(&arguments->head);
-    return arguments;
-}
+init_argument_list(void);
 
 struct commands_handle * 
-init_command_list(void){
-    struct commands_handle *commands = (struct commands_handle *)malloc(sizeof(struct commands_handle *));
-    STAILQ_INIT(&commands->head);
-    return commands;
-}
+init_command_list(void);
 
 void 
-argument_list_insert_tail(struct arguments_handle *where, struct argument *what){
-    STAILQ_INSERT_TAIL(&where->head, what, entries); 
-}
+argument_list_insert_tail(struct arguments_handle *where, struct argument *what);
 
 void 
-command_list_insert_head(struct commands_handle *where, struct command *what){
-    STAILQ_INSERT_HEAD(&where->head, what, entries); 
-}
+command_list_insert_head(struct commands_handle *where, struct command *what);
 

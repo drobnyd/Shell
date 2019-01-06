@@ -91,6 +91,7 @@
       fprintf(stderr, "%s\n", msg);
    }
    int yylex();
+   struct commands_handle *parsed_commands = NULL;
 
 
 /* Enabling traces.  */
@@ -113,7 +114,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 11 "grammar.y"
+#line 12 "grammar.y"
 {
 	char *str_val;
 	int int_val;
@@ -121,7 +122,7 @@ typedef union YYSTYPE
     struct arguments_handle *arguments_handle;
 }
 /* Line 193 of yacc.c.  */
-#line 125 "grammar.tab.c"
+#line 126 "grammar.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -134,7 +135,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 138 "grammar.tab.c"
+#line 139 "grammar.tab.c"
 
 #ifdef short
 # undef short
@@ -418,7 +419,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    28,    45,    52,    59,    68,    71,    76
+       0,    27,    27,    28,    36,    43,    50,    59,    62,    67
 };
 #endif
 
@@ -1319,28 +1320,19 @@ yyreduce:
     {
         case 2:
 #line 27 "grammar.y"
-    { YYACCEPT; ;}
+    { parsed_commands = NULL; YYACCEPT; ;}
     break;
 
   case 3:
 #line 28 "grammar.y"
     { 
-        // testing
-        struct command *cc;
-        struct argument *ca;
-        STAILQ_FOREACH(cc,&(yyvsp[(1) - (2)].commands_handle)->head,entries){
-            printf("cmd: %s args",cc->command_name);
-            STAILQ_FOREACH(ca,&cc->arguments_handle->head,entries){
-                printf("%s ",ca->argument_value);
-            }
-            printf("\n");
-        }
+        parsed_commands = (yyvsp[(1) - (2)].commands_handle);
         YYACCEPT; 
     ;}
     break;
 
   case 4:
-#line 45 "grammar.y"
+#line 36 "grammar.y"
     {
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (2)].str_val));
@@ -1351,7 +1343,7 @@ yyreduce:
     break;
 
   case 5:
-#line 52 "grammar.y"
+#line 43 "grammar.y"
     { 
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (3)].str_val));
@@ -1362,7 +1354,7 @@ yyreduce:
     break;
 
   case 6:
-#line 59 "grammar.y"
+#line 50 "grammar.y"
     {
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (4)].str_val));
@@ -1373,14 +1365,14 @@ yyreduce:
     break;
 
   case 7:
-#line 68 "grammar.y"
+#line 59 "grammar.y"
     { 
         (yyval.arguments_handle) = init_argument_list();
     ;}
     break;
 
   case 8:
-#line 71 "grammar.y"
+#line 62 "grammar.y"
     { 
         struct argument *to_add = init_argument();
         to_add->argument_value = (yyvsp[(2) - (2)].str_val);
@@ -1389,7 +1381,7 @@ yyreduce:
     break;
 
   case 9:
-#line 76 "grammar.y"
+#line 67 "grammar.y"
     { 
         struct argument *to_add = init_argument();
         to_add->argument_value = (yyvsp[(2) - (2)].str_val);
@@ -1399,7 +1391,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1403 "grammar.tab.c"
+#line 1395 "grammar.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1613,5 +1605,5 @@ yyreturn:
 }
 
 
-#line 83 "grammar.y"
+#line 74 "grammar.y"
 
