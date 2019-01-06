@@ -87,11 +87,11 @@
     #include <stdio.h>
     #include <string.h>
     #include "data_structures.h"
-    void yyerror(const char* msg) {
-      fprintf(stderr, "%s\n", msg);
-   }
-   int yylex();
-   struct commands_handle *parsed_commands = NULL;
+    void yyerror(const char* msg);
+    int yylex();
+    struct commands_handle *parsed_commands = NULL;
+    extern size_t current_line_num;
+    size_t yyexit_value = 0;
 
 
 /* Enabling traces.  */
@@ -104,7 +104,7 @@
 # undef YYERROR_VERBOSE
 # define YYERROR_VERBOSE 1
 #else
-# define YYERROR_VERBOSE 0
+# define YYERROR_VERBOSE 1
 #endif
 
 /* Enabling the token table.  */
@@ -419,7 +419,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    28,    36,    43,    50,    59,    62,    67
+       0,    31,    31,    32,    40,    47,    54,    63,    66,    71
 };
 #endif
 
@@ -428,8 +428,8 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "WORD", "QUOTED", "SEMICOLON", "END",
-  "$accept", "commandline", "command", "arguments", 0
+  "$end", "error", "$undefined", "\"word\"", "\"' or \\\"\"", "\";\"",
+  "\"\\\\n or EOF\"", "$accept", "commandline", "command", "arguments", 0
 };
 #endif
 
@@ -1319,12 +1319,12 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 27 "grammar.y"
+#line 31 "grammar.y"
     { parsed_commands = NULL; YYACCEPT; ;}
     break;
 
   case 3:
-#line 28 "grammar.y"
+#line 32 "grammar.y"
     { 
         parsed_commands = (yyvsp[(1) - (2)].commands_handle);
         YYACCEPT; 
@@ -1332,7 +1332,7 @@ yyreduce:
     break;
 
   case 4:
-#line 36 "grammar.y"
+#line 40 "grammar.y"
     {
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (2)].str_val));
@@ -1343,7 +1343,7 @@ yyreduce:
     break;
 
   case 5:
-#line 43 "grammar.y"
+#line 47 "grammar.y"
     { 
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (3)].str_val));
@@ -1354,7 +1354,7 @@ yyreduce:
     break;
 
   case 6:
-#line 50 "grammar.y"
+#line 54 "grammar.y"
     {
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (4)].str_val));
@@ -1365,14 +1365,14 @@ yyreduce:
     break;
 
   case 7:
-#line 59 "grammar.y"
+#line 63 "grammar.y"
     { 
         (yyval.arguments_handle) = init_argument_list();
     ;}
     break;
 
   case 8:
-#line 62 "grammar.y"
+#line 66 "grammar.y"
     { 
         struct argument *to_add = init_argument();
         to_add->argument_value = (yyvsp[(2) - (2)].str_val);
@@ -1381,7 +1381,7 @@ yyreduce:
     break;
 
   case 9:
-#line 67 "grammar.y"
+#line 71 "grammar.y"
     { 
         struct argument *to_add = init_argument();
         to_add->argument_value = (yyvsp[(2) - (2)].str_val);
@@ -1605,5 +1605,14 @@ yyreturn:
 }
 
 
-#line 74 "grammar.y"
+#line 78 "grammar.y"
 
+
+void yyerror(const char* msg) {
+    char * token = strdup(&msg[25]); // Get tokens name and on
+    char * end = strstr(token,", expecting");
+    end[0] = '\0'; 
+    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n",current_line_num, token);
+    free(token);
+    yyexit_value = 254;
+}

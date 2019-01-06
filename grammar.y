@@ -2,11 +2,11 @@
     #include <stdio.h>
     #include <string.h>
     #include "data_structures.h"
-    void yyerror(const char* msg) {
-      fprintf(stderr, "%s\n", msg);
-   }
-   int yylex();
-   struct commands_handle *parsed_commands = NULL;
+    void yyerror(const char* msg);
+    int yylex();
+    struct commands_handle *parsed_commands = NULL;
+    extern size_t current_line_num;
+    size_t yyexit_value = 0;
 %}
 
 %union {
@@ -16,9 +16,13 @@
     struct arguments_handle *arguments_handle;
 }
 
+%error-verbose
+
 /* Declare tokens */ 
-%token<str_val> WORD QUOTED
-%token<int_val> SEMICOLON END
+%token<str_val> WORD "word"
+%token<str_val> QUOTED "\' or \""
+%token<int_val> SEMICOLON ";"
+%token<int_val> END "\\n or EOF"
 
 %type<commands_handle> command commandline
 %type<arguments_handle> arguments
@@ -72,3 +76,13 @@ arguments: /* Lambda */ {
     ;
 
 %%
+
+void yyerror(const char* msg) {
+    char * token = strdup(&msg[25]); // Duplicate token's name and on
+    char * end = strstr(token,", expecting"); // Get rid of anything that is behind the name itself
+    end[0] = '\0';
+    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n",current_line_num, token);
+    free(token);
+    free(&end[1]); 
+    yyexit_value = 254;
+}

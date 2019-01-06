@@ -9,9 +9,12 @@
 extern void yyparse(void);
 extern void yy_scan_string(char*);
 extern void yylex_destroy(void);
+
 extern struct commands_handle *parsed_commands; // Where parsed commands from bison are stored after calling yyparse()
 extern sigjmp_buf sigint_buf;
+extern size_t yyexit_value;
 
+size_t current_line_num = 1;
 
 int main(int argc, char **argv)
 {
@@ -23,26 +26,41 @@ int main(int argc, char **argv)
 			case 'c':
 				get_commands(optarg);
 				execute_commands(parsed_commands);
-				return 0; // TODO exit value
+				internal_exit();
 			case '?':
 				if (optopt == 'c')
-				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+					fprintf (stderr, "Option -%c requires an argument.\n", optopt);
 				else
-				fprintf (stderr,
-						"Unknown option character `\\x%x'.\n",
-						optopt);
-				return 1;
+					fprintf (stderr,"Unknown option character `\\x%x'.\n",optopt);
 			default:
-				abort ();
+				exit(EXIT_FAILURE);
 		}
 	}
 	if (argc == 2){ // TODO error handling
-		printf("TODO");
-		return 0;
+		FILE *stream = fopen(argv[1], "r");
+		if(!stream){
+        	exit(EXIT_FAILURE);
+		}
+        char *input = NULL;
+        size_t len = 0;
+        ssize_t nread;
+		while ((nread = getline(&input, &len, stream)) != -1) {
+            get_commands(input);
+			if (yyexit_value){ // If error in parsing has occured, exit with value of the error
+				exit(yyexit_value);
+			}
+			// Execute read commands and save into parsed_commands
+			execute_commands(parsed_commands);
+			current_line_num++;
+        }
+        free(input);
+        fclose(stream);
+		// TODO
+		internal_exit();
 	}
 	set_sigint_handler();
 	interactive_mode_loop();
-    return 0;
+    internal_exit();
 }
 
 void get_commands(char *input){
@@ -59,12 +77,13 @@ void interactive_mode_loop(){
     for(;;) {
         // Create prompt string from user name and current working directory.
         snprintf(shell_prompt, sizeof(shell_prompt), "mysh:%s$ ", getcwd(NULL, 1024)); // TODO
-		while ( sigsetjmp( sigint_buf, 1 ) != 0 );
+		while ( sigsetjmp( sigint_buf, 1 ) != 0 )
+			;
         // Display prompt and read input
         input = readline(shell_prompt);
         // Check for EOF.
-        if (!input)
-            break;
+        if (!input) // Case of ^D exit with the last value
+            internal_exit();
 		get_commands(input);
 		// Execute read commands and save into parsed_commands
 		execute_commands(parsed_commands);

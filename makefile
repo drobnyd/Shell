@@ -1,4 +1,4 @@
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -Wpedantic
 LDLIBS = -lreadline -ll
 CC = cc
 bison_name = grammar
