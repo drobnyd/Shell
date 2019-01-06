@@ -1609,10 +1609,11 @@ yyreturn:
 
 
 void yyerror(const char* msg) {
-    char * token = strdup(&msg[25]); // Get tokens name and on
-    char * end = strstr(token,", expecting");
-    end[0] = '\0'; 
+    char * token = strdup(&msg[25]); // Duplicate token's name and on
+    char * end = strstr(token,", expecting"); // Get rid of anything that is behind the name itself
+    end[0] = '\0';
     fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n",current_line_num, token);
     free(token);
+    free(&end[1]); 
     yyexit_value = 254;
 }

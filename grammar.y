@@ -83,6 +83,5 @@ void yyerror(const char* msg) {
     end[0] = '\0';
     fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n",current_line_num, token);
     free(token);
-    free(&end[1]); 
     yyexit_value = 254;
 }
