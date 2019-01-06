@@ -3,16 +3,15 @@
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <setjmp.h>
 #include "command_execution.h"
-
 
 extern void yyparse(void);
 extern void yy_scan_string(char*);
 extern void yylex_destroy(void);
 extern struct commands_handle *parsed_commands; // Where parsed commands from bison are stored after calling yyparse()
-// Forward definitions
-void get_commands(char *input);
-void interactive_mode_loop();
+extern sigjmp_buf sigint_buf;
+
 
 int main(int argc, char **argv)
 {
@@ -37,6 +36,11 @@ int main(int argc, char **argv)
 				abort ();
 		}
 	}
+	if (argc == 2){ // TODO error handling
+		printf("TODO");
+		return 0;
+	}
+	set_sigint_handler();
 	interactive_mode_loop();
     return 0;
 }
@@ -54,7 +58,8 @@ void interactive_mode_loop(){
 	// Interactive mode
     for(;;) {
         // Create prompt string from user name and current working directory.
-        snprintf(shell_prompt, sizeof(shell_prompt), "mysh:%s$ ", getcwd(NULL, 1024));
+        snprintf(shell_prompt, sizeof(shell_prompt), "mysh:%s$ ", getcwd(NULL, 1024)); // TODO
+		while ( sigsetjmp( sigint_buf, 1 ) != 0 );
         // Display prompt and read input
         input = readline(shell_prompt);
         // Check for EOF.
