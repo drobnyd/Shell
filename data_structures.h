@@ -1,3 +1,6 @@
+#ifndef DATA_STRUCTS_H
+#define DATA_STRUCTS_H
+
 #include <sys/queue.h>
 
 struct argument {
@@ -37,3 +40,4 @@ argument_list_insert_tail(struct arguments_handle *where, struct argument *what)
 void 
 command_list_insert_head(struct commands_handle *where, struct command *what);
 
+#endif

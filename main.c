@@ -5,10 +5,7 @@
 #include <readline/history.h>
 #include <setjmp.h>
 #include "command_execution.h"
-
-extern void yyparse(void);
-extern void yy_scan_string(char*);
-extern void yylex_destroy(void);
+#include "data_structures.h"
 
 extern struct commands_handle *parsed_commands; // Where parsed commands from bison are stored after calling yyparse()
 extern sigjmp_buf sigint_buf;
