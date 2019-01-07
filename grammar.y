@@ -90,3 +90,8 @@ void yyerror(const char* msg) {
     free(token);
     yyexit_value = 254;
 }
+
+/* Restore parser's return value before next run of parser */
+void restore_exit_value(){
+    yyexit_value = 0; 
+}

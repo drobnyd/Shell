@@ -22,22 +22,23 @@ struct commands_handle {
     STAILQ_HEAD(command_list, command) head;
 };
 
-struct argument* 
+struct argument *
 init_argument(void);
 
-struct command* 
+struct command *
 init_command(void);
 
-struct arguments_handle * 
+struct arguments_handle *
 init_argument_list(void);
 
-struct commands_handle * 
+struct commands_handle *
 init_command_list(void);
 
-void 
-argument_list_insert_tail(struct arguments_handle *where, struct argument *what);
+void
+argument_list_insert_tail(struct arguments_handle *where,
+    struct argument *what);
 
-void 
+void
 command_list_insert_head(struct commands_handle *where, struct command *what);
 
 #endif
