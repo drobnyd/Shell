@@ -41,4 +41,10 @@ argument_list_insert_tail(struct arguments_handle *where,
 void
 command_list_insert_head(struct commands_handle *where, struct command *what);
 
+void 
+destroy_arguments(struct arguments_handle *what);
+
+void
+deallocate_commands(struct commands_handle *what);
+
 #endif

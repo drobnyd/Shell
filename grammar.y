@@ -2,7 +2,7 @@
     #include <stdio.h>
     #include <string.h>
     #include "data_structures.h"
-    void yyerror(const char* msg);
+    void yyerror(const char *msg);
     int yylex();
     struct commands_handle *parsed_commands = NULL;
     extern size_t current_line_num;
@@ -10,7 +10,7 @@
 %}
 
 %union {
-	char *str_val;
+	char * str_val;
 	int int_val;
     struct commands_handle *commands_handle;
     struct arguments_handle *arguments_handle;
@@ -22,8 +22,8 @@
 %token<str_val> WORD "word"
 %token<str_val> QUOTED "quote"
 %token<int_val> SEMICOLON ";"
-%token<int_val> END "EOF"
-%token<int_val> EOL "\\n"
+%token END "EOF"
+%token EOL "\\n"
 
 %type<commands_handle> command commandline
 %type<arguments_handle> arguments
@@ -45,9 +45,9 @@ end: EOL
 command: WORD arguments  {
         struct command *to_add = init_command();
         to_add->command_name = strdup($1);
-        to_add->arguments_handle = $2;  
+        to_add->arguments_handle = $2;
         $$ = init_command_list();
-        command_list_insert_head($$,to_add);
+        command_list_insert_head($$, to_add);
     }
     | WORD arguments SEMICOLON { 
         struct command *to_add = init_command();
@@ -60,7 +60,7 @@ command: WORD arguments  {
         struct command *to_add = init_command();
         to_add->command_name = strdup($1);
         to_add->arguments_handle = $2;
-        command_list_insert_head($4,to_add);
+        command_list_insert_head($4, to_add);
         $$ = $4;
     } 
     ;
@@ -71,22 +71,22 @@ arguments: /* Lambda */ {
     | arguments WORD { 
         struct argument *to_add = init_argument();
         to_add->argument_value = $2;
-        argument_list_insert_tail($1,to_add);
+        argument_list_insert_tail($1, to_add);
     }
     | arguments QUOTED { 
         struct argument *to_add = init_argument();
         to_add->argument_value = $2;
-        argument_list_insert_tail($1,to_add);
+        argument_list_insert_tail($1, to_add);
     }
     ;
 
 %%
 
-void yyerror(const char* msg) {
+void yyerror(const char * msg) {
     char * token = strdup(&msg[25]); // Duplicate token's name and on
-    char * end = strstr(token,", expecting"); // Get rid of anything that is behind the name itself
+    char * end = strstr(token, ", expecting"); // Get rid of anything that is behind the name itself
     end[0] = '\0';
-    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n",current_line_num, token);
+    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n", current_line_num, token);
     free(token);
     yyexit_value = 254;
 }

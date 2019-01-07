@@ -89,7 +89,7 @@
     #include <stdio.h>
     #include <string.h>
     #include "data_structures.h"
-    void yyerror(const char* msg);
+    void yyerror(const char *msg);
     int yylex();
     struct commands_handle *parsed_commands = NULL;
     extern size_t current_line_num;
@@ -118,7 +118,7 @@
 typedef union YYSTYPE
 #line 12 "grammar.y"
 {
-	char *str_val;
+	char * str_val;
 	int int_val;
     struct commands_handle *commands_handle;
     struct arguments_handle *arguments_handle;
@@ -1346,9 +1346,9 @@ yyreduce:
     {
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (2)].str_val));
-        to_add->arguments_handle = (yyvsp[(2) - (2)].arguments_handle);  
+        to_add->arguments_handle = (yyvsp[(2) - (2)].arguments_handle);
         (yyval.commands_handle) = init_command_list();
-        command_list_insert_head((yyval.commands_handle),to_add);
+        command_list_insert_head((yyval.commands_handle), to_add);
     ;}
     break;
 
@@ -1369,7 +1369,7 @@ yyreduce:
         struct command *to_add = init_command();
         to_add->command_name = strdup((yyvsp[(1) - (4)].str_val));
         to_add->arguments_handle = (yyvsp[(2) - (4)].arguments_handle);
-        command_list_insert_head((yyvsp[(4) - (4)].commands_handle),to_add);
+        command_list_insert_head((yyvsp[(4) - (4)].commands_handle), to_add);
         (yyval.commands_handle) = (yyvsp[(4) - (4)].commands_handle);
     ;}
     break;
@@ -1386,7 +1386,7 @@ yyreduce:
     { 
         struct argument *to_add = init_argument();
         to_add->argument_value = (yyvsp[(2) - (2)].str_val);
-        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle),to_add);
+        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle), to_add);
     ;}
     break;
 
@@ -1395,7 +1395,7 @@ yyreduce:
     { 
         struct argument *to_add = init_argument();
         to_add->argument_value = (yyvsp[(2) - (2)].str_val);
-        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle),to_add);
+        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle), to_add);
     ;}
     break;
 
@@ -1618,11 +1618,11 @@ yyreturn:
 #line 83 "grammar.y"
 
 
-void yyerror(const char* msg) {
+void yyerror(const char * msg) {
     char * token = strdup(&msg[25]); // Duplicate token's name and on
-    char * end = strstr(token,", expecting"); // Get rid of anything that is behind the name itself
+    char * end = strstr(token, ", expecting"); // Get rid of anything that is behind the name itself
     end[0] = '\0';
-    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n",current_line_num, token);
+    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n", current_line_num, token);
     free(token);
     yyexit_value = 254;
 }

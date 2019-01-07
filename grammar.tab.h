@@ -60,7 +60,7 @@
 typedef union YYSTYPE
 #line 12 "grammar.y"
 {
-	char *str_val;
+	char * str_val;
 	int int_val;
     struct commands_handle *commands_handle;
     struct arguments_handle *arguments_handle;

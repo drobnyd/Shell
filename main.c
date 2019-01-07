@@ -31,7 +31,7 @@ main(int argc, char **argv) {
         switch (c) {
         case 'c':
             get_commands(optarg);
-			// If error in parsing exit
+            // If error in parsing exit
             if (yyexit_value)
                 exit(yyexit_value);
             execute_commands(parsed_commands);
@@ -55,7 +55,7 @@ main(int argc, char **argv) {
         ssize_t nread;
         while ((nread = getline(&input, &len, stream)) != -1) {
             get_commands(input);
-			// Exit if error in parsing with the correspoding value
+            // Exit if error in parsing with the correspoding value
             if (yyexit_value)
                 exit(yyexit_value);
             execute_commands(parsed_commands);
@@ -80,24 +80,24 @@ get_commands(char *input) {
 
 void
 interactive_mode_loop() {
-    char * input, shell_prompt[100];
+    char *input, shell_prompt[100];
     // Configure readline to auto-complete paths when the tab key is hit.
     rl_bind_key('\t', rl_complete);
     // Interactive mode
     for (;;) {
         // Create prompt string from user name and current working directory.
-		// TODO
+        // TODO
         snprintf(shell_prompt, sizeof (shell_prompt), "mysh:%s$ ",
-			getcwd(NULL, 1024));
+            getcwd(NULL, 1024));
         while (sigsetjmp(sigint_buf, 1) != 0) {
-		}
+        }
         // Display prompt and read input
         input = readline(shell_prompt);
         // Check for EOF.
         if (!input) // Case of ^D exit with the last value
             internal_exit();
         get_commands(input);
-		// Exit if error in parsing with the correspoding value
+        // Exit if error in parsing with the correspoding value
         if (yyexit_value)
             set_exit_value(yyexit_value);
         else // Execute read commands and save into parsed_commands
