@@ -6,6 +6,7 @@
 #include <readline/history.h>
 #include <setjmp.h>
 #include <string.h>
+#include <fcntl.h>
 #include "command_execution.h"
 #include "data_structures.h"
 #include "parser_caller.h"
@@ -13,7 +14,7 @@
 /* Maximum size of input */
 #define ARG_MAX 32000
 
-/* Buffer for capture state in case of need for restoring it */
+/* Buffer for capturing a state of the program and then its restoration */
 extern sigjmp_buf sigint_buf;
 
 /* Try to run commands in -c mode. */
@@ -27,7 +28,7 @@ c_option_run(int argc, char *const *argv) {
             if (!input_too_large(optarg)){
                 struct commands_handle *to_execute = parse(optarg, 1);
                 // If error in parsing exit
-                if (get_parser_return_value())
+                if (get_parser_return_value() != 0)
                     exit(get_parser_return_value());
                 execute_commands(to_execute);
                 internal_exit();
@@ -38,27 +39,38 @@ c_option_run(int argc, char *const *argv) {
 
 /* Read commands from file */
 void
-noninteractive_run(const char *filename) {
-    FILE *stream = fopen(filename, "r");
-    if (!stream) {
-        exit(EXIT_FAILURE);
-    }
-    char *input = NULL;
-    size_t len = 0;
-    ssize_t nread;
+noninteractive_run(const char *filename) {    
+    int fd = open(filename, O_RDONLY);
+    if (fd == -1){
+        // TODO error
+    } 
+    char *buffer;
+    ssize_t line_size = 0;
     size_t line_num = 1;
-    while ((nread = getline(&input, &len, stream)) != -1) {
-        if (!input_too_large(input)){
-            struct commands_handle *to_execute = parse(input, line_num);
-            // If error in parsing exit
-            if (get_parser_return_value())
-                exit(get_parser_return_value());
-            execute_commands(to_execute);
+    buffer = malloc(sizeof (char));
+    while (read(fd, &buffer[line_size], 1) > 0) { // TODO if -1 is the result -> error
+        if (buffer[line_size] == '\n' || buffer[line_size] == 0x0) {
+            buffer[line_size] = '\0';
+            if (!input_too_large(buffer)){
+                struct commands_handle *to_execute = parse(buffer, line_num);
+                // If error in parsing exit
+                if (get_parser_return_value() != 0)
+                    exit(get_parser_return_value());
+                execute_commands(to_execute);
+            }
+            // Reset everything and move on the next line
+            free(buffer);
+            line_num++;
+            line_size = 0;
+            buffer = malloc(sizeof (char));
         }
-        line_num++;
+        else {
+            line_size++;
+            buffer = realloc(buffer, line_size * sizeof (char)); // TODO error check
+        }
     }
-    free(input);
-    fclose(stream);
+    free(buffer);
+    close(fd);
     internal_exit();
 }
 
@@ -66,11 +78,10 @@ void
 interactive_mode_loop() {
     // Register sigint handler
     set_sigint_handler();
-    char *input, shell_prompt[100];
     // Configure readline to auto-complete paths when the tab key is hit.
     rl_bind_key('\t', rl_complete);
-    // Interactive mode
-    while (1) {
+    char *input, shell_prompt[100];
+    while (1) { // While not exited by ^D
         // Create prompt string from user name and current working directory.
         snprintf(shell_prompt, sizeof (shell_prompt), "mysh:%s$ ",
             getcwd(NULL, 1024));
@@ -85,7 +96,7 @@ interactive_mode_loop() {
         if (!input_too_large(input)){
             struct commands_handle *to_execute = parse(input, 1);
             // If error in parsing don't execute the line
-            if (get_parser_return_value())
+            if (get_parser_return_value() != 0)
                 set_exit_value(get_parser_return_value());
             else
                 execute_commands(to_execute);
