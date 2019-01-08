@@ -44,9 +44,9 @@ command_list_insert_head(struct commands_handle *where, struct command *what) {
     STAILQ_INSERT_HEAD(&where->head, what, entries);
 }
 
-void 
-deallocate_arguments(struct arguments_handle *what){
-    struct argument *n1,*n2;
+void
+deallocate_arguments(struct arguments_handle *what) {
+    struct argument *n1, *n2;
     n1 = STAILQ_FIRST(&what->head);
     while (n1 != NULL) {
         n2 = STAILQ_NEXT(n1, entries);
@@ -58,8 +58,8 @@ deallocate_arguments(struct arguments_handle *what){
 }
 
 void
-deallocate_commands(struct commands_handle *what){
-    struct command *n1,*n2;
+deallocate_commands(struct commands_handle *what) {
+    struct command *n1, *n2;
     n1 = STAILQ_FIRST(&what->head);
     while (n1 != NULL) {
         deallocate_arguments(n1->arguments_handle);

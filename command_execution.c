@@ -26,17 +26,17 @@ execute_commands(struct commands_handle *to_execute) {
         argv = malloc(sizeof (char *)); // TODO fail
         argv[i++] = cc->command_name;
         STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
-            tmp = realloc(argv, (i+1) * sizeof (char*));
-            if (!tmp){
+            tmp = realloc(argv, (i+1) * sizeof (char *));
+            if (!tmp) {
                 // TODO fail
-            } else 
+            } else
                 argv = tmp;
             argv[i++] = ca->argument_value;
         }
-        tmp = realloc(argv, (i+1) * sizeof (char*));
-        if (!tmp){
+        tmp = realloc(argv, (i+1) * sizeof (char *));
+        if (!tmp) {
             // TODO fail
-        } else 
+        } else
             argv = tmp;
         argv[i] = NULL;
         if (!exec_internal_command(argv)) {
@@ -65,7 +65,7 @@ exec_child_process(char *const argv[]) {
 void
 wait_for_children() {
     int status = 0;
-    if ((waitpid(pid_fork, &status, 0)) == -1){
+    if ((waitpid(pid_fork, &status, 0)) == -1) {
         // TODO print error
     }
     // Collect child's exit value and set it as the shell's exit value
