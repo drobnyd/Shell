@@ -82,11 +82,10 @@ void
 interactive_mode_loop() {
     char *input, shell_prompt[100];
     // Configure readline to auto-complete paths when the tab key is hit.
-    rl_bind_key('\t', rl_complete);
+    //rl_bind_key('\t', rl_complete);
     // Interactive mode
-    for (;;) {
+    while (1) {
         // Create prompt string from user name and current working directory.
-        // TODO
         snprintf(shell_prompt, sizeof (shell_prompt), "mysh:%s$ ",
             getcwd(NULL, 1024));
         while (sigsetjmp(sigint_buf, 1) != 0) {
