@@ -1,0 +1,4 @@
+echo X
+date
+;;
+echoY

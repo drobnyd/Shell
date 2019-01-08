@@ -19,9 +19,6 @@ void
 internal_cd();
 
 void
-get_commands(char *input);
-
-void
 interactive_mode_loop(void);
 
 void
