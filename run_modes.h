@@ -2,6 +2,7 @@
 #define RUN_MODES_H
 
 #include <stdlib.h>
+#include "internal_commands.h"
 
 void noninteractive_run(const char *filename);
 

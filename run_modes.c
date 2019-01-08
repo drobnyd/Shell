@@ -9,8 +9,9 @@
 #include "command_execution.h"
 #include "data_structures.h"
 #include "parser_caller.h"
+
 /* Maximum size of input */
-#define ARG_MAX 10
+#define ARG_MAX 32000
 
 /* Buffer for capture state in case of need for restoring it */
 extern sigjmp_buf sigint_buf;

@@ -2,7 +2,7 @@ CFLAGS = -g -Wall -Wpedantic
 LDLIBS = -lreadline -ll
 CC = cc
 bison_name = grammar
-object_files = main.o command_execution.o data_structures.o run_modes.o parser_caller.o
+object_files = main.o command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o
 
 lex.yy.c: tokens.l
 	flex tokens.l

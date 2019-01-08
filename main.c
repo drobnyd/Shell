@@ -1,9 +1,10 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "run_modes.h"
 
 int
 main(int argc, char **argv) {
-    // Try running with -c argument
+    // Try running with -c argument. If applicable, it exits after
     c_option_run(argc, argv);
     // If -c was not applicable try other possibilites
     if (argc == 1) {
@@ -11,6 +12,7 @@ main(int argc, char **argv) {
     } else if (argc == 2) {
         noninteractive_run(argv[1]);
     }
-    // TODO print usages
+    fprintf(stderr, 
+        "Usages:\nmysh\nmysh -c[command]*\nmysh file.sh\n");
     exit(EXIT_FAILURE);
 }

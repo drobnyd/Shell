@@ -13,15 +13,6 @@ int8_t
 exec_internal_command(char *const argv[]);
 
 void
-internal_exit();
-
-void
-internal_cd();
-
-void
-interactive_mode_loop(void);
-
-void
 set_sigint_handler(void);
 
 void

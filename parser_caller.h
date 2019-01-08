@@ -3,6 +3,8 @@
 #include "data_structures.h"
 #include <stdlib.h>
 
+/* Methods for interaction with parser */
+
 struct commands_handle *parse(char *input, size_t line);
 
 size_t get_parser_return_value();
