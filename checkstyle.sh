@@ -1,1 +1,1 @@
-./cstyle.pl main.c command_execution.h command_execution.c data_structures.c data_structures.h | grep -v 'indent by spaces instead of tabs'
+./cstyle.pl src/main.c src/command_execution.h src/command_execution.c src/data_structures.c src/data_structures.h src/run_modes.c src/parser_caller.c src/internal_commands.c src/utils.c src/run_modes.h src/parser_caller.h src/internal_commands.h src/utils.h
