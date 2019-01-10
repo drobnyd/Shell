@@ -1,23 +1,29 @@
 CFLAGS = -g -Wall -Wpedantic
 LDLIBS = -lreadline -ll
 CC = cc
-bison_name = grammar
-object_files = main.o command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o utils.o
+BISON = grammar
+O_FILES = main.o command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o utils.o
+OS := $(shell uname)
+ifeq $(OS) Darwin
+	FLEX_LIB = -ll
+else
+	FLEX_LIB = -lfl
+endif
 
 lex.yy.c: tokens.l
 	flex tokens.l
 
-tokens.l: $(bison_name).tab.h
+tokens.l: $(BISON).tab.h
 	
-$(bison_name).tab.c: $(bison_name).tab.h
+$(BISON).tab.c: $(BISON).tab.h
 
-mysh: lex.yy.c $(bison_name).tab.c $(object_files)
+mysh: lex.yy.c $(BISON).tab.c $(O_FILES)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
-$(bison_name).tab.h: $(bison_name).y
-	bison -d $(bison_name).y
+$(BISON).tab.h: $(BISON).y
+	bison -d $(BISON).y
 
 .PHONY: clean
 
 clean:
-	rm $(object_files) mysh
+	rm $(O_FILES) mysh
