@@ -72,7 +72,10 @@ noninteractive_run(const char *filename) {
 			check_allocation(buffer);
 		} else {
 			line_size++;
-			char *tmp = realloc(buffer, line_size * sizeof (char));
+			// Allocate space for a new char. New buffer size is
+			// (line_size + 1) because line_size is indexed from 0
+			char *tmp = realloc(buffer,
+				(line_size + 1) * sizeof (char));
 			check_allocation(tmp);
 			buffer = tmp;
 		}
