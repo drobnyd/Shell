@@ -1,5 +1,4 @@
 CFLAGS = -g -Wall -Wpedantic
-LDLIBS = -lreadline -ll
 CC = cc
 BISON = grammar
 O_FILES = main.o command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o utils.o 
@@ -9,6 +8,7 @@ ifeq ($(OS),Darwin)
 else
 	FLEX_LIB = -lfl
 endif
+LDLIBS = -lreadline $(FLEX_LIB)
 
 lex.yy.c: tokens.l
 	flex tokens.l
