@@ -86,14 +86,14 @@
 /* Copy the first part of user declarations.  */
 #line 1 "grammar.y"
 
-    #include <stdio.h>
-    #include <string.h>
-    #include "data_structures.h"
-    void yyerror(const char *msg);
-    int yylex();
-    struct commands_handle *parsed_commands = NULL;
-    extern size_t current_line_num;
-    size_t yyexit_code = 0;
+	#include <stdio.h>
+	#include <string.h>
+	#include "data_structures.h"
+	void yyerror(const char *msg);
+	int yylex();
+	struct commands_handle *parsed_commands = NULL;
+	extern size_t current_line_num;
+	size_t yyexit_code = 0;
 
 
 /* Enabling traces.  */
@@ -120,8 +120,8 @@ typedef union YYSTYPE
 {
 	char * str_val;
 	int int_val;
-    struct commands_handle *commands_handle;
-    struct arguments_handle *arguments_handle;
+	struct commands_handle *commands_handle;
+	struct arguments_handle *arguments_handle;
 }
 /* Line 193 of yacc.c.  */
 #line 128 "grammar.tab.c"
@@ -1356,67 +1356,67 @@ yyreduce:
   case 3:
 #line 37 "grammar.y"
     { 
-        parsed_commands = (yyvsp[(1) - (2)].commands_handle);
-        YYACCEPT; 
-    ;}
+		parsed_commands = (yyvsp[(1) - (2)].commands_handle);
+		YYACCEPT; 
+	;}
     break;
 
   case 6:
 #line 49 "grammar.y"
     {
-        struct command *to_add = init_command();
-        to_add->command_name = (yyvsp[(1) - (2)].str_val);
-        to_add->arguments_handle = (yyvsp[(2) - (2)].arguments_handle);
-        (yyval.commands_handle) = init_command_list();
-        command_list_insert_head((yyval.commands_handle), to_add);
-    ;}
+		struct command *to_add = init_command();
+		to_add->command_name = (yyvsp[(1) - (2)].str_val);
+		to_add->arguments_handle = (yyvsp[(2) - (2)].arguments_handle);
+		(yyval.commands_handle) = init_command_list();
+		command_list_insert_head((yyval.commands_handle), to_add);
+	;}
     break;
 
   case 7:
 #line 56 "grammar.y"
     { 
-        struct command *to_add = init_command();
-        to_add->command_name = (yyvsp[(1) - (3)].str_val);
-        to_add->arguments_handle = (yyvsp[(2) - (3)].arguments_handle);  
-        (yyval.commands_handle) = init_command_list();
-        command_list_insert_head((yyval.commands_handle),to_add);
-    ;}
+		struct command *to_add = init_command();
+		to_add->command_name = (yyvsp[(1) - (3)].str_val);
+		to_add->arguments_handle = (yyvsp[(2) - (3)].arguments_handle);  
+		(yyval.commands_handle) = init_command_list();
+		command_list_insert_head((yyval.commands_handle),to_add);
+	;}
     break;
 
   case 8:
 #line 63 "grammar.y"
     {
-        struct command *to_add = init_command();
-        to_add->command_name = (yyvsp[(1) - (4)].str_val);
-        to_add->arguments_handle = (yyvsp[(2) - (4)].arguments_handle);
-        command_list_insert_head((yyvsp[(4) - (4)].commands_handle), to_add);
-        (yyval.commands_handle) = (yyvsp[(4) - (4)].commands_handle);
-    ;}
+		struct command *to_add = init_command();
+		to_add->command_name = (yyvsp[(1) - (4)].str_val);
+		to_add->arguments_handle = (yyvsp[(2) - (4)].arguments_handle);
+		command_list_insert_head((yyvsp[(4) - (4)].commands_handle), to_add);
+		(yyval.commands_handle) = (yyvsp[(4) - (4)].commands_handle);
+	;}
     break;
 
   case 9:
 #line 72 "grammar.y"
     { 
-        (yyval.arguments_handle) = init_argument_list();
-    ;}
+		(yyval.arguments_handle) = init_argument_list();
+	;}
     break;
 
   case 10:
 #line 75 "grammar.y"
     { 
-        struct argument *to_add = init_argument();
-        to_add->argument_value = (yyvsp[(2) - (2)].str_val);
-        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle), to_add);
-    ;}
+		struct argument *to_add = init_argument();
+		to_add->argument_value = (yyvsp[(2) - (2)].str_val);
+		argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle), to_add);
+	;}
     break;
 
   case 11:
 #line 80 "grammar.y"
     { 
-        struct argument *to_add = init_argument();
-        to_add->argument_value = (yyvsp[(2) - (2)].str_val);
-        argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle), to_add);
-    ;}
+		struct argument *to_add = init_argument();
+		to_add->argument_value = (yyvsp[(2) - (2)].str_val);
+		argument_list_insert_tail((yyvsp[(1) - (2)].arguments_handle), to_add);
+	;}
     break;
 
 
@@ -1639,15 +1639,15 @@ yyreturn:
 
 
 void yyerror(const char * msg) {
-    char * token = strdup(&msg[25]); // Duplicate token's name and on
-    char * end = strstr(token, ", expecting"); // Get rid of anything that is behind the name itself
-    end[0] = '\0';
-    fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n", current_line_num, token);
-    free(token);
-    yyexit_code = 254;
+	char * token = strdup(&msg[25]); // Duplicate token's name and on
+	char * end = strstr(token, ", expecting"); // Get rid of anything that is behind the name itself
+	end[0] = '\0';
+	fprintf(stderr, "error:%zu: syntax error near unexpected token '%s'\n", current_line_num, token);
+	free(token);
+	yyexit_code = 254;
 }
 
 /* Restore parser's return value before next run of parser */
 void restore_parsers_exit_code(){
-    yyexit_code = 0; 
+	yyexit_code = 0; 
 }

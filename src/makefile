@@ -2,9 +2,9 @@ CFLAGS = -g -Wall -Wpedantic
 LDLIBS = -lreadline -ll
 CC = cc
 BISON = grammar
-O_FILES = main.o command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o utils.o
-OS := $(shell uname)
-ifeq $(OS) Darwin
+O_FILES = main.o command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o utils.o 
+OS = $(shell uname)
+ifeq ($(OS),Darwin)
 	FLEX_LIB = -ll
 else
 	FLEX_LIB = -lfl

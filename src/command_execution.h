@@ -1,10 +1,7 @@
-#ifndef CMD_EXEC_H
-#define CMD_EXEC_H
-
+#ifndef	CMD_EXEC_H
+#define	CMD_EXEC_H
 #include <stdlib.h>
 #include "data_structures.h"
-
-#define MAX_ARGS 32000
 
 void
 execute_commands(struct commands_handle *to_execute);

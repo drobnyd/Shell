@@ -18,16 +18,16 @@ size_t current_line_num;
 /* Return tokenize and parse commands */
 struct commands_handle *
 parse(char *input, size_t line) {
-    current_line_num = line;
-    restore_parsers_exit_code();
-    yy_scan_string(input);
-    yyparse(); // Sets yyexit_code
-    yylex_destroy();
-    return parsed_commands;
+	current_line_num = line;
+	restore_parsers_exit_code();
+	yy_scan_string(input);
+	yyparse(); // Sets yyexit_code
+	yylex_destroy();
+	return (parsed_commands);
 }
 
 /* If non-zero is returned an error has occured when parsing */
 size_t
-get_parser_exit_code(){
-    return (yyexit_code);
+get_parser_exit_code() {
+	return (yyexit_code);
 }

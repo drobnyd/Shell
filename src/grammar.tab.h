@@ -62,8 +62,8 @@ typedef union YYSTYPE
 {
 	char * str_val;
 	int int_val;
-    struct commands_handle *commands_handle;
-    struct arguments_handle *arguments_handle;
+	struct commands_handle *commands_handle;
+	struct arguments_handle *arguments_handle;
 }
 /* Line 1529 of yacc.c.  */
 #line 70 "grammar.tab.h"

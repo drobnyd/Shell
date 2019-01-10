@@ -1,7 +1,10 @@
 %{
-    #include <stdio.h>
-    #include "grammar.tab.h"
+	#include <stdio.h>
+	#include "grammar.tab.h"
 %}
+
+/* Do not generate unnecessary functions */
+%option nounput noinput
 
 WHITESPACE[ \r\t\f\v]
 WORD[^'";# \t\n\r\f\v]+
@@ -15,31 +18,31 @@ WORD[^'";# \t\n\r\f\v]+
 %%
 
 <SINGLE_QUOTES>"\\\'" { /* TODO Escaped double quotes with \' append ' to command*/
-    strcat(yylval.str_val,"\'");
+	strcat(yylval.str_val,"\'");
 }
 
 <DOUBLE_QUOTES>"\\\"" { /* TODO Escaped double quotes with \" append " to command*/
-    strcat(yylval.str_val, "\"");
+	strcat(yylval.str_val, "\"");
 }
 
 <SINGLE_QUOTES>"'" {
-    BEGIN(INITIAL);
-    return QUOTED;
+	BEGIN(INITIAL);
+	return QUOTED;
 }
 
 <DOUBLE_QUOTES>\" {
-    BEGIN(INITIAL);
-    return QUOTED;
+	BEGIN(INITIAL);
+	return QUOTED;
 }
 
-    /* TODO line counting */
+	/* TODO line counting */
 <COMMENT>"\n" {
-    BEGIN(INITIAL); /* Comment is ended by new line */
+	BEGIN(INITIAL); /* Comment is ended by new line */
 }
 
 <COMMENT><<EOF>> {
-    BEGIN(INITIAL); /* Comment is ended by new line */
-    return END;
+	BEGIN(INITIAL); /* Comment is ended by new line */
+	return END;
 }
 
 <COMMENT>. /* Do nothing, the comment is not passed any further */
@@ -49,36 +52,36 @@ WORD[^'";# \t\n\r\f\v]+
 }
 
 {WORD} {
-    yylval.str_val = strdup(yytext);
-    return WORD;
+	yylval.str_val = strdup(yytext);
+	return WORD;
 }
 
 ";" {
-    return SEMICOLON; 
+	return SEMICOLON; 
 }
 
 \n {
-    return EOL;
+	return EOL;
 }
 
 <<EOF>>  {
-    return END;
+	return END;
 }
 
 "#" {
-    BEGIN(COMMENT);
+	BEGIN(COMMENT);
 }  
 
 "'" {
-    BEGIN(SINGLE_QUOTES);
-    yylval.str_val = (char*)(malloc(sizeof(char)));
-    yylval.str_val[0] = '\0';
+	BEGIN(SINGLE_QUOTES);
+	yylval.str_val = (char*)(malloc(sizeof(char)));
+	yylval.str_val[0] = '\0';
 }   
 
 \"  {
-    BEGIN(DOUBLE_QUOTES);
-    yylval.str_val = (char*)(malloc(sizeof(char)));
-    yylval.str_val[0] = '\0';
+	BEGIN(DOUBLE_QUOTES);
+	yylval.str_val = (char*)(malloc(sizeof(char)));
+	yylval.str_val[0] = '\0';
 }
 
 {WHITESPACE}+   /* Ignore whitespaces */
