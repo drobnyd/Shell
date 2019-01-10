@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/queue.h>
+#include <sys/wait.h>
 #include <string.h>
 #include <signal.h>
 #include <setjmp.h>
