@@ -1,0 +1,4 @@
+*.o
+*.dSYM/
+mysh
+test_mysh
