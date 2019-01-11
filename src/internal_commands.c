@@ -18,8 +18,8 @@ internal_cd(const char *dir) {
 		setenv("PWD", getcwd(NULL, 0), 1);
 	}
 	if (!getenv("OLDPWD")) {
-		fprintf(stderr, "cd: OLDPWD not set");
-		return;
+		//fprintf(stderr, "cd: OLDPWD not set\n");
+		setenv("PWD", getenv("PWD"), 1);
 	}
 	char *target;
 	if (dir == NULL) { // Go to $HOME
