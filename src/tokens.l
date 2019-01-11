@@ -17,11 +17,11 @@ WORD[^'";# \t\n\r\f\v]+
 
 %%
 
-<SINGLE_QUOTES>"\\\'" { /* TODO Escaped double quotes with \' append ' to command*/
+<SINGLE_QUOTES>"\\\'" { /* Escaped double quotes with \' append ' to command*/
 	strcat(yylval.str_val,"\'");
 }
 
-<DOUBLE_QUOTES>"\\\"" { /* TODO Escaped double quotes with \" append " to command*/
+<DOUBLE_QUOTES>"\\\"" { /* Escaped double quotes with \" append " to command*/
 	strcat(yylval.str_val, "\"");
 }
 
@@ -35,7 +35,7 @@ WORD[^'";# \t\n\r\f\v]+
 	return QUOTED;
 }
 
-	/* TODO line counting */
+	/* line counting */
 <COMMENT>"\n" {
 	BEGIN(INITIAL); /* Comment is ended by new line */
 }
