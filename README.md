@@ -220,3 +220,143 @@ you start your shell from.
 	mysh:/data/mysh$ cd /
 	mysh:/$ cd /tmp
 	mysh:/tmp$
+	
+Phase 2 (due to June 30, 2019)
+-------
+- implement pipes
+- implement the three basic redirections
+
+Pipelines
+~~~~~~~~~
+The number of pipes in a pipeline is only limited by the machine
+resources.  That means no static array for pipelines.
+
+So, for example, the following prints output of date(1):
+
+  	mysh$ date | cat | cat | cat | cat | cat | cat | sort -n | uniq
+
+Pipelines may be separated by a semicolon, i.e. it's an extension of the
+1st phase:
+
+	mysh$ cat /etc/passwd | wc -l; echo X | grep X
+	26
+	X 
+
+Note that the shell needs to wait for all commands in the pipeline to
+finish before printing out the next prompt.  So you need to create the
+pipeline HORIZONTALLY, meaning the shell is a parent of ALL processes in
+the pipeline (remember, wait(2) only works on direct children).  For
+example, the following will hang for 10 seconds before your shell
+returns a new prompt:
+
+	mysh$ date | sleep 10 | cat
+
+If you only waited for the last command (cat(1) in this case), the shell
+would offer the next prompt right away which is NOT correct.
+
+Note that sleep(1) does not read from its input, and does not write
+anything to STDOUT, so the cat(1) command finds no writer on the pipe
+and exits right away.
+
+Redirections
+~~~~~~~~~~~~
+Implement the three basic redirections:
+
+	- "> file"
+	- "< file"
+	- ">> file"
+
+Note: there is no need to implement "2>xxx", ">&N" etc.
+
+Whitespace is not significant (e.g. ">file", "> file" and ">    file"
+are all syntactically correct and equivalent)
+
+You may assume redirection operators always come at the end, if it helps
+you simplify the parsing, i.e.:
+
+	mysh$ cat /etc/passwd > output
+	mysh$ cat < output >output2
+
+  You do NOT need to implement:
+
+	mysh$ >output cat /etc/passwd
+	mysh$ cat >output /etc/passwd
+
+The last redirection counts, ie. the following will append the output to
+"output3":
+
+	mysh$ date >output >output2 >>output3
+
+And the following will print /etc/passwd ONLY:
+
+	mysh$ cat </etc/group </etc/passwd
+
+And the following will write /etc/group to output3, truncating it if it
+existed beforehand:
+
+	mysh$ cat </etc/passwd </etc/group >output >>output2 >output3
+
+Normal shells always create all files with ">" and ">>" but you do not
+need to do that.  It's OK only to create the last one only.
+
+Note that redirection comes after connecting the individual commands in
+the pipeline with pipes, so the following copies /etc/passwd to file
+"output", puts date's output to file "output2", and the last cat(1)
+finds no writer on the pipeline (since date(1) is printing to "output2"
+instead) and just exits finding STDIN empty:
+
+	$ cat /etc/passwd > output | date > output2 | cat
+
+Anything not listed above is NOT required
+-----------------------------------------
+I.e. in particular, we do NOT require any of these below:
+
+- background execution via &
+
+- environment variable support (i.e. "echo $HOME" nor "XXX=value ./a.out")
+
+- the "export" internal command.
+
+- Job control.  That also means there is no need to create a new process
+  group for each pipeline (that's what a normal shell does).  However,
+  if you do, you will need to solve how background processes the control
+  terminal as that was out of scope of our class.
+
+- support for $? etc.
+
+- string support, i.e. the following is not required:
+
+	$ echo "xxx   yy"
+	xxx   yy
+
+- `` and $( ... )
+
+- complex commands like "if", "while", "for", "switch", etc.
+
+- line continuation with '\'
+
+If unsure, either ask on our class mailing list or check what bash does.
+
+vim:tw=72
+vim:ft=conf
+	
+	
+PROHIBITED FUNCTIONS
+--------------------
+Family of fopen() functions et al are prohibited.  Instead use functions
+from the printf(3) family, read(2), write(2), etc.
+
+popen(3), system(3), and similar functions that fork() INSIDE are
+strictly prohibited.  The only way to create a new process for you is to
+use fork(2).
+
+You must NOT exec any shell from your code.  I.e. if you have a pipeline
+"cat /etc/passwd | wc -l", the solution is not the following:
+
+	if (fork() == 0) {
+		execl("/bin/sh", "sh", "-c", "cat /etc/passwd | wc -l",
+		    NULL);
+	}
+
+You really have to fork a new process for each command in a pipeline,
+and connect them together with pipes.
