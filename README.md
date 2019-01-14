@@ -222,14 +222,14 @@ you start your shell from.
 	mysh:/data/mysh$ cd /
 	mysh:/$ cd /tmp
 	mysh:/tmp$
-````	
+````
 Phase 2 (due to June 30, 2019)
 -------
 - implement pipes
 - implement the three basic redirections
 
 Pipelines
-~~~~~~~~~
+
 The number of pipes in a pipeline is only limited by the machine
 resources.  That means no static array for pipelines.
 
@@ -261,7 +261,7 @@ anything to STDOUT, so the cat(1) command finds no writer on the pipe
 and exits right away.
 
 Redirections
-~~~~~~~~~~~~
+
 Implement the three basic redirections:
 
 	- "> file"
@@ -338,10 +338,10 @@ I.e. in particular, we do NOT require any of these below:
 - line continuation with '\'
 
 If unsure, either ask on our class mailing list or check what bash does.
-
+````
 vim:tw=72
 vim:ft=conf
-	
+````
 	
 PROHIBITED FUNCTIONS
 --------------------
