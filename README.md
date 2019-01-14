@@ -1,9 +1,6 @@
-# shell-NSWI015
-A Simple Shell Implementation
+# A Simple Shell Implementation for Linux/Unix programming in C course at Charles University in Prague
 
-Phirst phase requirements (due to January 13, 2019)
-
-Phase 1
+Phase 1 requirements (due to January 13, 2019)
 -------
 Note - the "mysh$" prompt in examples below represents the behavior of
 the shell you implement.  The "Bash$" prompt represents the system shell
