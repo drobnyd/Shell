@@ -1,4 +1,4 @@
-# A Simple Shell Implementation for Linux/Unix programming in C course at Charles University in Prague
+# Shell Task for Linux/Unix programming in C course at Charles University in Prague
 
 Phase 1 requirements (due to January 13, 2019)
 -------
