@@ -345,15 +345,15 @@ vim:ft=conf
 	
 PROHIBITED FUNCTIONS
 --------------------
-Family of fopen() functions et al are prohibited.  Instead use functions
+Family of **fopen() functions et al are prohibited**.  Instead use functions
 from the printf(3) family, read(2), write(2), etc.
 
-popen(3), system(3), and similar functions that fork() INSIDE are
+**popen(3), system(3), and similar functions** that fork() INSIDE are
 strictly prohibited.  The only way to create a new process for you is to
 use fork(2).
 
-You must NOT exec any shell from your code.  I.e. if you have a pipeline
-"cat /etc/passwd | wc -l", the solution is not the following:
+You must **NOT exec any shell** from your code.  I.e. if you have a pipeline
+"cat /etc/passwd | wc -l", the solution is **not the following**:
 
 	if (fork() == 0) {
 		execl("/bin/sh", "sh", "-c", "cat /etc/passwd | wc -l",
