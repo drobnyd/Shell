@@ -228,7 +228,7 @@ Phase 2 (due to June 30, 2019)
 - implement pipes
 - implement the three basic redirections
 
-###Pipelines
+### Pipelines
 
 The number of pipes in a pipeline is only limited by the machine
 resources.  That means no static array for pipelines.
