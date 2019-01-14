@@ -260,7 +260,7 @@ Note that sleep(1) does not read from its input, and does not write
 anything to STDOUT, so the cat(1) command finds no writer on the pipe
 and exits right away.
 
-Redirections
+### Redirections
 
 Implement the three basic redirections:
 
