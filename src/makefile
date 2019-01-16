@@ -1,3 +1,4 @@
+.DEFAULT_GOAL = mysh
 CFLAGS = -g -Wall -Wpedantic
 CC = cc
 BISON = grammar
