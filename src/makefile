@@ -36,4 +36,4 @@ cstyle: main.c command_execution.h command_execution.c data_structures.c data_st
 	../cstyle.pl main.c command_execution.h command_execution.c data_structures.c data_structures.h run_modes.c parser_caller.c internal_commands.c utils.c run_modes.h parser_caller.h internal_commands.h utils.h
 
 clean:
-	rm $(O_FILES) main.o test_main.o test_mysh mysh lex.yy.c tokens.l
+	rm $(O_FILES) main.o test_main.o test_mysh mysh lex.yy.c tokens.l $(BISON).tab.c $(BISON).tab.h
