@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <err.h>
 #include "run_modes.h"
 
 int
@@ -13,7 +14,5 @@ main(int argc, char **argv) {
 			noninteractive_run(argv[1]);
 		}
 	}
-	fprintf(stderr,
-		"Usages:\nmysh\nmysh -c[command]*\nmysh file.sh\n");
-	exit(EXIT_FAILURE);
+	errx(2, "Usages:\nmysh\nmysh -c[command]*\nmysh file.sh\n");
 }

@@ -10,6 +10,7 @@
 #include "data_structures.h"
 #include "parser_caller.h"
 #include "utils.h"
+#include <err.h>
 
 /* Buffer for capturing a state of the program and then its restoration */
 extern sigjmp_buf sigint_buf;
@@ -42,10 +43,7 @@ void
 noninteractive_run(const char *filename) {
 	int fd = open(filename, O_RDONLY);
 	if (fd == -1) {
-		fprintf(stderr,
-			"An executable file: %s does not exist.\n",
-			filename);
-		exit(EXIT_FAILURE);
+		err(2, "%s", filename);
 	}
 	char *buffer;
 	size_t nread;
@@ -83,10 +81,7 @@ noninteractive_run(const char *filename) {
 	free(buffer);
 	close(fd);
 	if (nread == -1) {
-		fprintf(stderr,
-			"A problem when reading file: %s has occured.\n",
-			filename);
-		exit(EXIT_FAILURE);
+		err(2, "%s", filename);
 	}
 	internal_exit();
 }

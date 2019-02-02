@@ -8,6 +8,7 @@
 #include <string.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <err.h>
 
 /* -1 if the process has no children. */
 /* Otherwise contains a positive number with child's PID */
@@ -53,12 +54,10 @@ void
 exec_child_process(char *const argv[]) {
 	pid_fork = fork(); // Create child process
 	if (pid_fork < 0) {
-		fprintf(stderr, "fork() failed!\n");
+		warn("fork");
 	} else if (pid_fork == 0) { // In child's execution
 		execvp(argv[0], argv);
-		fprintf(stderr,
-			"mysh: %s: No such file or directory\n", argv[0]);
-		exit(127);
+		err(127,"%s", argv[0]);
 	} else {
 		wait_for_children();
 	}
@@ -69,9 +68,7 @@ void
 wait_for_children() {
 	int status = 0;
 	if ((waitpid(pid_fork, &status, 0)) == -1) {
-		fprintf(stderr,
-			"Error, child process PID:%d cannot be waited\n",
-			pid_fork);
+		warn("PID:%d ", pid_fork);
 	}
 	// Collect child's exit value and set it as the shell's exit value
 	if (WIFEXITED(status)) {
@@ -104,7 +101,7 @@ set_exit_code(size_t val) {
 void
 handle_sigint(int signal) {
 	if (pid_fork > 1) { // A child exists, propagate the signal
-		fprintf(stderr, "Killed by signal %d.\n", SIGINT);
+		warn("Killed by signal %d.", SIGINT);
 		kill(pid_fork, SIGINT);
 	} else if (pid_fork == -1) {
 		// Offer a new line

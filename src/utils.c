@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <err.h>
 
 /* Maximum size of input */
 #define	ARG_MAX 32000
@@ -11,8 +12,7 @@
 size_t
 check_allocation(void *ptr) {
 	if (!ptr) {
-		fprintf(stderr, "Error, dynamic memory cannot be allocated \n");
-		exit(EXIT_FAILURE);
+		err(2, "");
 	} else {
 		return (1);
 	}
@@ -21,8 +21,7 @@ check_allocation(void *ptr) {
 size_t
 input_too_large(const char *input) {
 	if (strlen(input) > ARG_MAX) {
-		fprintf(stderr,
-			"Input cannot be larger than %d bytes\n", ARG_MAX);
+		warnx("Input cannot be larger than %d bytes\n", ARG_MAX);
 		return (1);
 	}
 	return (0);

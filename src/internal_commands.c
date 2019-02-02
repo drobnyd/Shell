@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <err.h>
 
 /* Value to exit with */
 extern size_t exit_code;
@@ -32,7 +33,7 @@ internal_cd(const char *dir) {
 		setenv("OLDPWD", getenv("PWD"), 1);
 		setenv("PWD", target, 1);
 	} else {
-		fprintf(stderr, "cd: %s: No such file or directory\n", target);
+		warn("%s", target);
 	}
 	free(target);
 }
