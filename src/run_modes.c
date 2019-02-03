@@ -1,6 +1,7 @@
 #include "run_modes.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -33,6 +34,14 @@ c_option_run(int argc, char *const *argv) {
 				execute_commands(to_execute);
 				internal_exit();
 			}
+		case '?':
+			if (optopt == 'c')
+			errx(1, "Option -%c requires an argument.", optopt);
+			else if (isprint (optopt))
+			errx(1, "Unknown option `-%c'.", optopt);
+			else
+			errx(1, "Unknown option character '\\x%x'.",
+					optopt);
 		}
 	}
 	return (0);
