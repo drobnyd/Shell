@@ -15,12 +15,13 @@ internal_exit() {
 
 void
 internal_cd(const char *dir) {
-	if (!getenv("PWD")) {
-		setenv("PWD", getcwd(NULL, 0), 1);
-	}
-	if (!getenv("OLDPWD")) {
-		setenv("PWD", getenv("PWD"), 1);
-	}
+	// In the case that the needed variables havent been set
+	// But do not overwrite existing - the last arg is 0
+	setenv("PWD", getcwd(NULL, 0), 0);
+	setenv("OLDPWD", getenv("PWD"), 0);
+	// In such case make the current directory the home one
+	setenv("HOME", getenv("PWD"), 0);
+
 	char *target;
 	if (dir == NULL) { // Go to $HOME
 		target = strdup(getenv("HOME"));
