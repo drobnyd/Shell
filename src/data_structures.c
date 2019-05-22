@@ -107,18 +107,43 @@ deallocate_arguments(struct arguments_handle *what) {
 
 void
 deallocate_commands(struct commands_handle *what) {
+	if (what == NULL)
+		return;
+
 	struct command *n1, *n2;
 	n1 = STAILQ_FIRST(&what->head);
+
 	while (n1 != NULL) {
 		n2 = STAILQ_NEXT(n1, entries);
 		deallocate_command(n1);
 		n1 = n2;
 	}
+
+	free(what);
+}
+
+void
+deallocate_pipe(struct pipe_handle *what){
+	if (what == NULL)
+		return;
+
+	struct commands_handle *n1, *n2;
+	n1 = STAILQ_FIRST(&what->head);
+
+	while (n1 != NULL) {
+		n2 = STAILQ_NEXT(n1, entries);
+		deallocate_commands(n1);
+		n1 = n2;
+	}
+
 	free(what);
 }
 
 void
 deallocate_command(struct command *what){
+	if (what == NULL)
+		return;
+
 	deallocate_arguments(what->arguments_handle);
 	deallocate_redirection(what->redirection);
 	free(what->command_name);
@@ -134,9 +159,4 @@ deallocate_redirection(struct redirection *what){
 	free(what->out_file_a);
 	free(what->out_file_r);
 	free(what);
-}
-
-void
-deallocate_pipe(struct pipe_handle *what){
-	// TODO
 }

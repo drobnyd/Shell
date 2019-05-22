@@ -45,6 +45,7 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 	int in = STDIN_FILENO;
 	int out;
 
+	// TODO closing of descriptors
 	STAILQ_FOREACH(cc, &to_execute->head, entries) {
 		size_t i = 0;
 		char **tmp;
