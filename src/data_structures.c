@@ -8,6 +8,7 @@ init_argument(void) {
 	struct argument *argument =
 		malloc(sizeof (struct argument));
 	check_allocation(argument);
+
 	argument->argument_value = NULL;
 	return (argument);
 }
@@ -17,8 +18,21 @@ init_argument_list(void) {
 	struct arguments_handle *arguments =
 			malloc(sizeof (struct arguments_handle));
 	check_allocation(arguments);
+
 	STAILQ_INIT(&arguments->head);
 	return (arguments);
+}
+
+struct redirection *
+init_redirection(void) {
+	struct redirection *redirection =
+			malloc(sizeof (struct redirection));
+	check_allocation(redirection);
+
+	redirection->in_file = NULL;
+	redirection->out_file_r = NULL;
+	redirection->out_file_a = NULL;
+	return (redirection);
 }
 
 struct command *
@@ -26,8 +40,10 @@ init_command(void) {
 	struct command *command =
 		malloc(sizeof (struct command));
 	check_allocation(command);
+
 	command->command_name = NULL;
 	command->arguments_handle = NULL;
+	command->redirection = NULL;
 	return (command);
 }
 
@@ -36,6 +52,7 @@ init_command_list(void) {
 	struct commands_handle *commands =
 			malloc(sizeof (struct commands_handle));
 	check_allocation(commands);
+
 	STAILQ_INIT(&commands->head);
 	return (commands);
 }
@@ -45,6 +62,7 @@ init_pipe_list(void) {
 	struct pipe_handle *commands =
 			malloc(sizeof (struct pipe_handle));
 	check_allocation(commands);
+
 	STAILQ_INIT(&commands->head);
 	return (commands);
 }
@@ -99,12 +117,26 @@ deallocate_commands(struct commands_handle *what) {
 	free(what);
 }
 
-void deallocate_command(struct command *what){
+void
+deallocate_command(struct command *what){
 	deallocate_arguments(what->arguments_handle);
+	deallocate_redirection(what->redirection);
 	free(what->command_name);
 	free(what);
 }
 
-void deallocate_pipe(struct pipe_handle *what){
+void
+deallocate_redirection(struct redirection *what){
+	if (what == NULL)
+		return;
+
+	free(what->in_file);
+	free(what->out_file_a);
+	free(what->out_file_r);
+	free(what);
+}
+
+void
+deallocate_pipe(struct pipe_handle *what){
 	// TODO
 }

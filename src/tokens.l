@@ -7,7 +7,7 @@
 %option nounput noinput
 
 WHITESPACE[ \r\t\f\v]
-WORD[^'";|# \t\n\r\f\v]+
+WORD[^'";|><# \t\n\r\f\v]+
 
 /* States where special characters are not that special anymore */
 %x SINGLE_QUOTES
@@ -67,6 +67,15 @@ WORD[^'";|# \t\n\r\f\v]+
 "|" {
 	return PIPELINE;
 }
+
+">" {
+    return OUT_REDIRECTION;
+}
+
+"<" {
+    return IN_REDIRECTION;
+}
+
 
 <<EOF>>  {
 	return END;

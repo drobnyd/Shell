@@ -28,12 +28,29 @@ void
 argument_list_insert_tail(struct arguments_handle *where,
 struct argument *what);
 
+// Redirection
+struct redirection {
+	char *in_file;
+	// Mutually exclusive
+	/* File to append output to */
+	char *out_file_a;
+	/* File to rewrite with output */
+	char *out_file_r;
+};
+
+struct redirection *
+init_redirection(void);
+
+void
+deallocate_redirection(struct redirection *what);
+
 // Commands
 
 /** Command and its arguments */
 struct command {
 	char *command_name;
 	struct arguments_handle *arguments_handle;
+	struct redirection *redirection;
 	STAILQ_ENTRY(command) entries;
 };
 

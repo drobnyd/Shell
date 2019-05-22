@@ -16,6 +16,7 @@
 	struct arguments_handle *arguments_handle;
 	struct pipe_handle *pipe_handle;
 	struct command *command_ptr;
+	struct redirection *redirection_ptr;
 }
 
 %error-verbose
@@ -27,17 +28,21 @@
 %token PIPELINE "|"
 %token END "EOF"
 %token EOL "\\n"
+%token IN_REDIRECTION "<"
+%token OUT_REDIRECTION ">"
 
 %destructor { free($$); } WORD QUOTED
 %destructor { deallocate_command($$); } command
 %destructor { deallocate_arguments($$); } arguments
 %destructor { deallocate_commands($$); } pipe
 %destructor { deallocate_pipe($$); } command_line
+%destructor { deallocate_redirection($$); } redirection
 
 %type<commands_handle> pipe
 %type<arguments_handle> arguments
 %type<command_ptr> command
 %type<pipe_handle> command_line
+%type<redirection_ptr> redirection
 %%
 
 input: end /* Empty line is ignored */ { parsed_commands = NULL; YYACCEPT; }
@@ -92,8 +97,48 @@ pipe:
 	}
 	;
 
+redirection:
+ 	redirection IN_REDIRECTION WORD {
+ 		$1->in_file = $3;
+ 		$$ = $1;
+	}
+	| redirection OUT_REDIRECTION WORD {
+		$1->out_file_r = $3;
+                $1->out_file_a = NULL;
+                $$ = $1;
+	}
+	| redirection OUT_REDIRECTION OUT_REDIRECTION WORD {
+		$$->out_file_r = NULL;
+                $$->out_file_a = $4;
+                $$ = $1;
+        }
+	| IN_REDIRECTION WORD {
+		$$ = init_redirection();
+		$$->in_file = $2;
+	}
+	| OUT_REDIRECTION WORD {
+		$$ = init_redirection();
+        	$$->out_file_r = $2;
+        	$$->out_file_a = NULL;
+
+	}
+	| OUT_REDIRECTION OUT_REDIRECTION WORD {
+		$$ = init_redirection();
+                $$->out_file_r = NULL;
+                $$->out_file_a = $3;
+        }
+	;
+
 /* An atomic command */
-command: WORD arguments {
+command:
+	WORD arguments redirection {
+		$$ = init_command();
+		$$->command_name = $1;
+		$$->arguments_handle = $2;
+		$$->redirection = $3;
+	}
+	;
+	| WORD arguments {
 		$$ = init_command();
 		$$->command_name = $1;
 		$$->arguments_handle = $2;
