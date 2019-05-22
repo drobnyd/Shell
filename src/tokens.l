@@ -7,9 +7,9 @@
 %option nounput noinput
 
 WHITESPACE[ \r\t\f\v]
-WORD[^'";# \t\n\r\f\v]+
+WORD[^'";|# \t\n\r\f\v]+
 
-/* States when special characters are not that special anymore */
+/* States where special characters are not that special anymore */
 %x SINGLE_QUOTES
 %x DOUBLE_QUOTES
 /* Ignore the contents until end od line */
@@ -62,6 +62,10 @@ WORD[^'";# \t\n\r\f\v]+
 
 \n {
 	return EOL;
+}
+
+"|" {
+	return PIPELINE;
 }
 
 <<EOF>>  {

@@ -3,48 +3,79 @@
 
 #include <sys/queue.h>
 
+// Arguments
+
+/** Arguments of a command */
 struct argument {
 	char *argument_value;
 	STAILQ_ENTRY(argument) entries;
 };
 
+struct argument *
+init_argument(void);
+
+struct arguments_handle {
+	STAILQ_HEAD(argument_list, argument) head;
+};
+
+void
+deallocate_arguments(struct arguments_handle *what);
+
+struct arguments_handle *
+init_argument_list(void);
+
+void
+argument_list_insert_tail(struct arguments_handle *where,
+struct argument *what);
+
+// Commands
+
+/** Command and its arguments */
 struct command {
 	char *command_name;
 	struct arguments_handle *arguments_handle;
 	STAILQ_ENTRY(command) entries;
 };
 
-struct arguments_handle {
-	STAILQ_HEAD(argument_list, argument) head;
-};
-
-struct commands_handle {
-	STAILQ_HEAD(command_list, command) head;
-};
-
-struct argument *
-init_argument(void);
-
 struct command *
 init_command(void);
 
-struct arguments_handle *
-init_argument_list(void);
+void
+deallocate_command(struct command *what);
+
+struct commands_handle {
+	STAILQ_HEAD(command_list, command) head;
+	STAILQ_ENTRY(commands_handle) entries;
+};
 
 struct commands_handle *
 init_command_list(void);
 
 void
-argument_list_insert_tail(struct arguments_handle *where,
-	struct argument *what);
-
-void
 command_list_insert_head(struct commands_handle *where, struct command *what);
 
 void
-deallocate_arguments(struct arguments_handle *what);
+deallocate_commands(struct commands_handle *what);
+
+// Pipes
+
+/** Colon of commands delimited by a pipe */
+struct pipe_handle {
+	STAILQ_HEAD(composite_list, commands_handle) head;
+};
+
+struct pipe_handle *
+init_pipe_list(void);
 
 void
-deallocate_commands(struct commands_handle *what);
+pipe_list_insert_head(struct pipe_handle *where,
+struct commands_handle *what);
+
+void
+pipe_list_insert_simple_head(struct pipe_handle *where,
+struct command *what);
+
+void
+deallocate_pipe(struct pipe_handle *what);
 
 #endif

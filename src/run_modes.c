@@ -26,12 +26,12 @@ c_option_run(int argc, char *const *argv) {
 		switch (c) {
 		case 'c':
 			if (!input_too_large(optarg)) {
-				struct commands_handle *to_execute =
+				struct pipe_handle *to_execute =
 					parse(optarg, 1);
 				// If error in parsing exit
 				if (get_parser_exit_code() != 0)
 					exit(get_parser_exit_code());
-				execute_commands(to_execute);
+				execute_input(to_execute);
 				internal_exit();
 			}
 		case '?':
@@ -54,23 +54,30 @@ noninteractive_run(const char *filename) {
 	if (fd == -1) {
 		err(2, "%s", filename);
 	}
+
 	char *buffer;
 	size_t nread;
 	ssize_t line_size = 0;
 	size_t line_num = 1;
 	buffer = malloc(sizeof (char));
 	check_allocation(buffer);
+
+	//Read input one by one
 	while ((nread = read(fd, &buffer[line_size], 1)) > 0) {
+	    // End of line
 		if (buffer[line_size] == '\n' || buffer[line_size] == 0x0) {
 			buffer[line_size] = '\0';
+
 			if (!input_too_large(buffer)) {
-				struct commands_handle *to_execute =
+				struct pipe_handle *to_execute =
 					parse(buffer, line_num);
 				// If error in parsing exit
 				if (get_parser_exit_code() != 0)
 					exit(get_parser_exit_code());
-				execute_commands(to_execute);
+
+				execute_input(to_execute);
 			}
+
 			// Reset everything and move on the next line
 			free(buffer);
 			line_num++;
@@ -87,11 +94,14 @@ noninteractive_run(const char *filename) {
 			buffer = tmp;
 		}
 	}
+	// Clean up
 	free(buffer);
 	close(fd);
+
 	if (nread == -1) {
 		err(2, "%s", filename);
 	}
+
 	internal_exit();
 }
 
@@ -116,12 +126,12 @@ interactive_mode_loop() {
 		if (!input) // If EOF, exit with the last command's value
 			internal_exit();
 		if (!input_too_large(input)) {
-			struct commands_handle *to_execute = parse(input, 1);
+			struct pipe_handle *to_execute = parse(input, 1);
 			// If error in parsing don't execute the line
 			if (get_parser_exit_code() != 0)
 				set_exit_code(get_parser_exit_code());
 			else
-				execute_commands(to_execute);
+				execute_input(to_execute);
 			// Add input to history.
 			add_history(input);
 		}

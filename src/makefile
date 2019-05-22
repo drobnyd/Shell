@@ -21,6 +21,9 @@ $(BISON).tab.c: $(BISON).tab.h
 mysh: lex.yy.c $(BISON).tab.c main.o  $(O_FILES)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
+run: mysh
+	./mysh
+
 test_mysh: lex.yy.c $(BISON).tab.c test_main.o $(O_FILES)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 

@@ -7,7 +7,7 @@ int
 main(int argc, char **argv) {
 	// Try running with -c argument. If applicable, exit after
 	if (c_option_run(argc, argv) == 0) {
-		// If -c was not applicable try other possibilites
+		// If -c was not applicable try other possibilities
 		if (argc == 1) {
 			interactive_mode_loop();
 		} else if (argc == 2) {

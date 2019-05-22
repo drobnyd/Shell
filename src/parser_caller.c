@@ -7,7 +7,7 @@ extern void yylex_destroy(void);
 extern void restore_parsers_exit_code(void);
 
 /* Where parsed commands from bison are stored after calling yyparse() */
-extern struct commands_handle *parsed_commands;
+extern struct pipe_handle *parsed_commands;
 
 /* Parser's return value if greater than 0 parsing error has occured */
 extern size_t yyexit_code;
@@ -16,7 +16,7 @@ extern size_t yyexit_code;
 size_t current_line_num;
 
 /* Return tokenize and parse commands */
-struct commands_handle *
+struct pipe_handle *
 parse(char *input, size_t line) {
 	current_line_num = line;
 	restore_parsers_exit_code();
@@ -26,7 +26,7 @@ parse(char *input, size_t line) {
 	return (parsed_commands);
 }
 
-/* If non-zero is returned an error has occured when parsing */
+/* If non-zero is returned an error has occurred when parsing */
 size_t
 get_parser_exit_code() {
 	return (yyexit_code);

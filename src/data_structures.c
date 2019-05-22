@@ -2,37 +2,48 @@
 #include "utils.h"
 #include <stdlib.h>
 
+
 struct argument *
 init_argument(void) {
 	struct argument *argument =
-		(malloc(sizeof (struct argument)));
+		malloc(sizeof (struct argument));
 	check_allocation(argument);
 	argument->argument_value = NULL;
 	return (argument);
 }
 
-struct command *
-init_command(void) {
-	struct command *command =
-		(malloc(sizeof (struct command)));
-	check_allocation(command);
-	command->command_name = NULL;
-	command->arguments_handle = NULL;
-	return (command);
-}
 struct arguments_handle *
 init_argument_list(void) {
 	struct arguments_handle *arguments =
-		malloc(sizeof (struct arguments_handle));
+			malloc(sizeof (struct arguments_handle));
 	check_allocation(arguments);
 	STAILQ_INIT(&arguments->head);
 	return (arguments);
 }
 
+struct command *
+init_command(void) {
+	struct command *command =
+		malloc(sizeof (struct command));
+	check_allocation(command);
+	command->command_name = NULL;
+	command->arguments_handle = NULL;
+	return (command);
+}
+
 struct commands_handle *
 init_command_list(void) {
 	struct commands_handle *commands =
-		malloc(sizeof (struct commands_handle));
+			malloc(sizeof (struct commands_handle));
+	check_allocation(commands);
+	STAILQ_INIT(&commands->head);
+	return (commands);
+}
+
+struct pipe_handle *
+init_pipe_list(void) {
+	struct pipe_handle *commands =
+			malloc(sizeof (struct pipe_handle));
 	check_allocation(commands);
 	STAILQ_INIT(&commands->head);
 	return (commands);
@@ -47,6 +58,20 @@ argument_list_insert_tail(struct arguments_handle *where,
 void
 command_list_insert_head(struct commands_handle *where, struct command *what) {
 	STAILQ_INSERT_HEAD(&where->head, what, entries);
+}
+
+void
+pipe_list_insert_head(struct pipe_handle *where,
+	struct commands_handle *what){
+		STAILQ_INSERT_HEAD(&where->head, what, entries);
+}
+
+void
+pipe_list_insert_simple_head(struct pipe_handle *where,
+	struct command *what){
+		struct commands_handle *to_add = init_command_list();
+		command_list_insert_head(to_add, what);
+		pipe_list_insert_head(where, to_add);
 }
 
 void
@@ -67,11 +92,19 @@ deallocate_commands(struct commands_handle *what) {
 	struct command *n1, *n2;
 	n1 = STAILQ_FIRST(&what->head);
 	while (n1 != NULL) {
-		deallocate_arguments(n1->arguments_handle);
 		n2 = STAILQ_NEXT(n1, entries);
-		free(n1->command_name);
-		free(n1);
+		deallocate_command(n1);
 		n1 = n2;
 	}
 	free(what);
+}
+
+void deallocate_command(struct command *what){
+	deallocate_arguments(what->arguments_handle);
+	free(what->command_name);
+	free(what);
+}
+
+void deallocate_pipe(struct pipe_handle *what){
+	// TODO
 }

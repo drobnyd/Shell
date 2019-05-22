@@ -10,60 +10,113 @@
 #include <setjmp.h>
 #include <err.h>
 
-/* -1 if the process has no children. */
-/* Otherwise contains a positive number with child's PID */
+/* -1 if the process has no children.
+ Otherwise contains a positive number with child's PID */
 pid_t pid_fork = -1;
 size_t exit_code = 0;
 sigjmp_buf sigint_buf;
 
-/* Execute one by one commands stored in to_execute */
+/** Execute one by one commands stored in to_execute */
 void
-execute_commands(struct commands_handle *to_execute) {
+execute_input(struct pipe_handle *to_execute) {
+
 	if (!to_execute)
 		return; // Nothing to execute, shouldn't happen
+
+	struct commands_handle *cp;
+	STAILQ_FOREACH(cp, &to_execute->head, entries) {
+		execute_commands_in_pipe(cp);
+	}
+
+	deallocate_pipe(to_execute);
+}
+
+void
+execute_commands_in_pipe(struct commands_handle *to_execute) {
+
+	if (!to_execute)
+		return; // Nothing to execute, shouldn't happen
+
 	char **argv;
 	struct command *cc;
-	struct argument *ca;
-	// TODO split to execute one method
+
+	int fd[2];
+	int in = STDIN_FILENO;
+	int out;
+
 	STAILQ_FOREACH(cc, &to_execute->head, entries) {
 		size_t i = 0;
 		char **tmp;
 		argv = malloc(sizeof (char *));
 		check_allocation(argv);
 		argv[i++] = cc->command_name;
+
+		struct argument *ca;
 		STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
 			tmp = realloc(argv, (i+1) * sizeof (char *));
 			check_allocation(tmp);
 			argv = tmp;
 			argv[i++] = ca->argument_value;
 		}
+
 		tmp = realloc(argv, (i+1) * sizeof (char *));
 		check_allocation(tmp);
 		argv = tmp;
 		argv[i] = NULL;
-		if (!exec_internal_command(argv)) {
-			exec_child_process(argv);
+
+		if (STAILQ_NEXT(cc,entries) != NULL) {
+			pipe(fd);
+			out = fd[1];
+		} else { // Is last
+			out = STDOUT_FILENO;
 		}
+
+		if (!exec_internal_command(argv)) {
+			exec_child_process(argv, in, out);
+		}
+
+		in = fd[0];
+
 		free(argv);
 	}
+	// Restore
+	dup2(STDIN_FILENO, 0);
+	dup2(STDOUT_FILENO, 1);
+
 	deallocate_commands(to_execute);
 }
 
-/* Fork a child process and execute it, parent waits for its end */
+/** Fork a child process and execute it, parent waits for its end */
 void
-exec_child_process(char *const argv[]) {
+exec_child_process(char *const argv[], int in, int out) {
 	pid_fork = fork(); // Create child process
 	if (pid_fork < 0) {
 		warn("fork");
 	} else if (pid_fork == 0) { // In child's execution
+
+		// TODO errchecks
+		if (in != 0) {
+			dup2(in, 0);
+			close(in);
+		}
+
+		if (out != 1) {
+			dup2(out, 1);
+			close(out);
+		}
+
 		execvp(argv[0], argv);
+
 		err(127,"%s", argv[0]);
 	} else {
+		if (out != 1)
+			close(out);
+
 		wait_for_children();
 	}
 }
 
-/* Blocks until the children is running. Then collects child's return value. */
+/** Blocks until the children is running. Then collects child's return value. */
 void
 wait_for_children() {
 	int status = 0;
@@ -79,7 +132,7 @@ wait_for_children() {
 	pid_fork = -1; // Restore no child mode
 }
 
-/* Returns 0 if no internal command was executed, otherwise 1 */
+/** Returns 0 if no internal command was executed, otherwise 1 */
 size_t
 exec_internal_command(char *const argv[]) {
 	if (strcmp(argv[0], "exit") == 0) {
@@ -91,13 +144,13 @@ exec_internal_command(char *const argv[]) {
 	return (0);
 }
 
-/* Sets exit value on the event of exit of the shell */
+/** Sets exit value on the event of exit of the shell */
 void
 set_exit_code(size_t val) {
 	exit_code = val;
 }
 
-/* Handling of SIGINT signal of the shell */
+/** Handling of SIGINT signal of the shell */
 void
 handle_sigint(int signal) {
 	if (pid_fork > 1) { // A child exists, propagate the signal
@@ -112,7 +165,7 @@ handle_sigint(int signal) {
 	// Else is a non-valid invariant that should never happen
 }
 
-/* Registers lookup(handle_sigint) method as SIGINT handler */
+/** Registers lookup(handle_sigint) method as SIGINT handler */
 void
 set_sigint_handler() {
 	struct sigaction sa;

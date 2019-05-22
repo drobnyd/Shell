@@ -15,7 +15,7 @@ internal_exit() {
 
 void
 internal_cd(const char *dir) {
-	// In the case that the needed variables havent been set
+	// In the case that the needed variables haven't been set
 	// But do not overwrite existing - the last arg is 0
 	setenv("PWD", getcwd(NULL, 0), 0);
 	setenv("OLDPWD", getenv("PWD"), 0);
@@ -30,7 +30,7 @@ internal_cd(const char *dir) {
 	} else { // Else the argument is a path
 		target = strdup(dir);
 	}
-	if (chdir(target) == 0) { // If succesfully changed update env variables
+	if (chdir(target) == 0) { // If successfully changed update env variables
 		setenv("OLDPWD", getenv("PWD"), 1);
 		setenv("PWD", target, 1);
 	} else {
