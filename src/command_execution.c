@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <err.h>
+#include <fcntl.h>
 
 /* -1 if the process has no children.
  Otherwise contains a positive number with child's PID */
@@ -67,19 +68,44 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 		if (STAILQ_NEXT(cc,entries) != NULL) {
 			pipe(fd);
 			out = fd[1];
-		} else { // Is last
+		} else { // Is the last one, write out
 			out = STDOUT_FILENO;
+		}
+
+		// Redirection
+		if (cc->redirection != NULL) {
+			if (cc->redirection->in_file != NULL) {
+				//close(in);
+				in = open(cc->redirection->in_file, O_RDONLY);
+			}
+
+			if (cc->redirection->out_file_a != NULL) {
+				close(fd[1]); // Nothing will be written to the pipe
+				out = open(cc->redirection->out_file_a, O_WRONLY | O_CREAT | O_APPEND, 0666);
+			}
+
+			if (cc->redirection->out_file_r != NULL) {
+				close(fd[1]); // Nothing will be written to the pipe
+				out = open(cc->redirection->out_file_r, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+			}
 		}
 
 		if (!exec_internal_command(argv)) {
 			exec_child_process(argv, in, out);
 		}
 
+		/*if (in != 0)
+			close(in);
+
+		if (out != 1)
+			close(out);*/
+
 		in = fd[0];
 
 		free(argv);
 	}
-	// Restore
+
+	// Restore descriptors
 	dup2(STDIN_FILENO, 0);
 	dup2(STDOUT_FILENO, 1);
 
