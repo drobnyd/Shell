@@ -69,6 +69,10 @@ command_line: command {
 		$$ = init_pipe_list();
 		pipe_list_insert_head($$, $1);
 	}
+	| pipe SEMICOLON {
+         	$$ = init_pipe_list();
+         	pipe_list_insert_head($$, $1);
+        }
 	| pipe SEMICOLON command_line {
 		pipe_list_insert_head($3, $1);
 		$$ = $3;
