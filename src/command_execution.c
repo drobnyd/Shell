@@ -96,7 +96,7 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 
 		if (STAILQ_NEXT(cc,entries) != NULL) {
 			if (pipe(fd))
-				errx(2,"");
+				err(2,"");
 
 			next_in = fd[0];
 			out = fd[1];
@@ -120,38 +120,38 @@ void
 exec_child_process(char *const argv[], int in, int out) {
 	pid_fork = fork(); // Create child process
 	if (pid_fork < 0) {
-		warnx("");
+		warn("");
 	} else if (pid_fork == 0) { // In child's execution
 
 		if (in != 0) {
 			if (dup2(in, 0) != 0)
-				warnx("");
+				warn("");
 
 			if (close(in))
-				warnx("");
+				warn("");
 		}
 
 		if (out != 1) {
 			if (dup2(out, 1) != 1)
-				warnx("");
+				warn("");
 
 			if (close(out))
-				warnx("");
+				warn("");
 		}
 
 		execvp(argv[0], argv);
 
 		err(127,"%s", argv[0]);
 	} else { // Parent
-		// Parent does not communicates through pipe, close descriptors
+		// Parent does not communicate through pipe, close descriptors
 
 		if (in != 0)
 			if (close(in))
-				warnx("");
+				warn("");
 
 		if (out != 1)
 			if (close(out))
-				warnx("");
+				warn("");
 
 		wait_for_children();
 	}
@@ -195,8 +195,9 @@ set_exit_code(size_t val) {
 void
 handle_sigint(int signal) {
 	if (pid_fork > 1) { // A child exists, propagate the signal
-		warn("Killed by signal %d.", SIGINT);
+		warnx("Killed by signal %d.", SIGINT);
 		kill(pid_fork, SIGINT);
+
 	} else if (pid_fork == -1) {
 		// Offer a new line
 		fprintf(stdout, "\n");
