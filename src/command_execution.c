@@ -32,6 +32,32 @@ execute_input(struct pipe_handle *to_execute) {
 	deallocate_pipe(to_execute);
 }
 
+/** Loads command structure to argv executable by execvp */
+char **
+load_command_to_argv(struct command *cc) {
+	char **argv, **tmp;
+	size_t i = 0;
+
+	argv = malloc(sizeof (char *));
+	check_allocation(argv);
+	argv[i++] = cc->command_name;
+
+	struct argument *ca;
+	STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
+		tmp = realloc(argv, (i+1) * sizeof (char *));
+		check_allocation(tmp);
+		argv = tmp;
+		argv[i++] = ca->argument_value;
+	}
+
+	tmp = realloc(argv, (i+1) * sizeof (char *));
+	check_allocation(tmp);
+	argv = tmp;
+	argv[i] = NULL;
+
+	return argv;
+}
+
 void
 redirect(struct redirection *redirection, int *in, int *out, int *fd) {
 	// Redirection
@@ -53,69 +79,40 @@ redirect(struct redirection *redirection, int *in, int *out, int *fd) {
 	}
 }
 
-char **
-load_command_to_argv( struct command *cc){
-	char **argv;
-	char **tmp;
-	size_t i = 0;
-	argv = malloc(sizeof (char *));
-	check_allocation(argv);
-	argv[i++] = cc->command_name;
-
-	struct argument *ca;
-	STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
-		tmp = realloc(argv, (i+1) * sizeof (char *));
-		check_allocation(tmp);
-		argv = tmp;
-		argv[i++] = ca->argument_value;
-	}
-
-	tmp = realloc(argv, (i+1) * sizeof (char *));
-	check_allocation(tmp);
-	argv = tmp;
-	argv[i] = NULL;
-
-	return argv;
-}
-
-
 void
 execute_commands_in_pipe(struct commands_handle *to_execute) {
 
 	if (!to_execute)
 		return; // Nothing to execute, shouldn't happen
-		
+
 	struct command *cc;
-	/** File descriptors between piped commands */
+	/* File descriptors between piped commands */
 	int out, in = STDIN_FILENO;
 
-	// TODO closing of descriptors
 	STAILQ_FOREACH(cc, &to_execute->head, entries) {
-		int fd[2];
 		char **argv = load_command_to_argv(cc);
+		int fd[2];
+		int next_in = STDIN_FILENO; // Input for next command
 
 		if (STAILQ_NEXT(cc,entries) != NULL) {
 			if (pipe(fd))
 				errx(2,"");
 
+			next_in = fd[0];
 			out = fd[1];
 		} else // Is the last one, write out
 			out = STDOUT_FILENO;
-
 
 		redirect(cc->redirection, &in, &out, fd);
 
 		if (!exec_internal_command(argv))
 			exec_child_process(argv, in, out);
 
-		if (in != 0)
-			if (close(in))
-				warnx("");
-
-		in = fd[0];
+		in = next_in;
 
 		free(argv);
 	}
+
 }
 
 /** Fork a child process and execute it, parent waits for its end */
@@ -146,13 +143,15 @@ exec_child_process(char *const argv[], int in, int out) {
 
 		err(127,"%s", argv[0]);
 	} else { // Parent
-		// TODO
-		if (out != 1) {
+		// Parent does not communicates through pipe, close descriptors
+
+		if (in != 0)
+			if (close(in))
+				warnx("");
+
+		if (out != 1)
 			if (close(out))
 				warnx("");
-		}
-
-		// TODO in close?
 
 		wait_for_children();
 	}
