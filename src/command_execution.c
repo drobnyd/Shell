@@ -53,39 +53,46 @@ redirect(struct redirection *redirection, int *in, int *out, int *fd) {
 	}
 }
 
+char **
+load_command_to_argv( struct command *cc){
+	char **argv;
+	char **tmp;
+	size_t i = 0;
+	argv = malloc(sizeof (char *));
+	check_allocation(argv);
+	argv[i++] = cc->command_name;
+
+	struct argument *ca;
+	STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
+		tmp = realloc(argv, (i+1) * sizeof (char *));
+		check_allocation(tmp);
+		argv = tmp;
+		argv[i++] = ca->argument_value;
+	}
+
+	tmp = realloc(argv, (i+1) * sizeof (char *));
+	check_allocation(tmp);
+	argv = tmp;
+	argv[i] = NULL;
+
+	return argv;
+}
+
 
 void
 execute_commands_in_pipe(struct commands_handle *to_execute) {
 
 	if (!to_execute)
 		return; // Nothing to execute, shouldn't happen
-
-	char **argv;
+		
 	struct command *cc;
-	int fd[2];
-	int in = STDIN_FILENO;
-	int out;
+	/** File descriptors between piped commands */
+	int out, in = STDIN_FILENO;
 
 	// TODO closing of descriptors
 	STAILQ_FOREACH(cc, &to_execute->head, entries) {
-		size_t i = 0;
-		char **tmp;
-		argv = malloc(sizeof (char *));
-		check_allocation(argv);
-		argv[i++] = cc->command_name;
-
-		struct argument *ca;
-		STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
-			tmp = realloc(argv, (i+1) * sizeof (char *));
-			check_allocation(tmp);
-			argv = tmp;
-			argv[i++] = ca->argument_value;
-		}
-
-		tmp = realloc(argv, (i+1) * sizeof (char *));
-		check_allocation(tmp);
-		argv = tmp;
-		argv[i] = NULL;
+		int fd[2];
+		char **argv = load_command_to_argv(cc);
 
 		if (STAILQ_NEXT(cc,entries) != NULL) {
 			if (pipe(fd))
@@ -109,10 +116,6 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 
 		free(argv);
 	}
-
-	// TODO is necessary? Restore descriptors
-	/*dup2(STDIN_FILENO, 0);
-	dup2(STDOUT_FILENO, 1);*/
 }
 
 /** Fork a child process and execute it, parent waits for its end */
@@ -148,6 +151,8 @@ exec_child_process(char *const argv[], int in, int out) {
 			if (close(out))
 				warnx("");
 		}
+
+		// TODO in close?
 
 		wait_for_children();
 	}
