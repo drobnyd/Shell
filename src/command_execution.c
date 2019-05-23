@@ -33,6 +33,28 @@ execute_input(struct pipe_handle *to_execute) {
 }
 
 void
+redirect(struct redirection *redirection, int *in, int *out, int *fd) {
+	// Redirection
+	if (redirection != NULL) {
+		if (redirection->in_file != NULL) {
+			//close(in);
+			*in = open(redirection->in_file, O_RDONLY);
+		}
+
+		if (redirection->out_file_a != NULL) {
+			close(fd[1]); // Nothing will be written to the pipe
+			*out = open(redirection->out_file_a, O_WRONLY | O_CREAT | O_APPEND, 0666);
+		}
+
+		if (redirection->out_file_r != NULL) {
+			close(fd[1]); // Nothing will be written to the pipe
+			*out = open(redirection->out_file_r, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		}
+	}
+}
+
+
+void
 execute_commands_in_pipe(struct commands_handle *to_execute) {
 
 	if (!to_execute)
@@ -40,7 +62,6 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 
 	char **argv;
 	struct command *cc;
-
 	int fd[2];
 	int in = STDIN_FILENO;
 	int out;
@@ -73,28 +94,13 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 			out = STDOUT_FILENO;
 		}
 
-		// Redirection
-		if (cc->redirection != NULL) {
-			if (cc->redirection->in_file != NULL) {
-				//close(in);
-				in = open(cc->redirection->in_file, O_RDONLY);
-			}
-
-			if (cc->redirection->out_file_a != NULL) {
-				close(fd[1]); // Nothing will be written to the pipe
-				out = open(cc->redirection->out_file_a, O_WRONLY | O_CREAT | O_APPEND, 0666);
-			}
-
-			if (cc->redirection->out_file_r != NULL) {
-				close(fd[1]); // Nothing will be written to the pipe
-				out = open(cc->redirection->out_file_r, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-			}
-		}
+		redirect(cc->redirection, &in, &out, fd);
 
 		if (!exec_internal_command(argv)) {
 			exec_child_process(argv, in, out);
 		}
 
+		// TODO close unnecessary descriptors
 		/*if (in != 0)
 			close(in);
 
@@ -109,8 +115,6 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 	// Restore descriptors
 	dup2(STDIN_FILENO, 0);
 	dup2(STDOUT_FILENO, 1);
-
-	deallocate_commands(to_execute);
 }
 
 /** Fork a child process and execute it, parent waits for its end */
@@ -135,7 +139,7 @@ exec_child_process(char *const argv[], int in, int out) {
 		execvp(argv[0], argv);
 
 		err(127,"%s", argv[0]);
-	} else {
+	} else { // Parent
 		if (out != 1)
 			close(out);
 
