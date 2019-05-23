@@ -88,33 +88,31 @@ execute_commands_in_pipe(struct commands_handle *to_execute) {
 		argv[i] = NULL;
 
 		if (STAILQ_NEXT(cc,entries) != NULL) {
-			pipe(fd);
+			if (pipe(fd))
+				errx(2,"");
+
 			out = fd[1];
-		} else { // Is the last one, write out
+		} else // Is the last one, write out
 			out = STDOUT_FILENO;
-		}
+
 
 		redirect(cc->redirection, &in, &out, fd);
 
-		if (!exec_internal_command(argv)) {
+		if (!exec_internal_command(argv))
 			exec_child_process(argv, in, out);
-		}
 
-		// TODO close unnecessary descriptors
-		/*if (in != 0)
-			close(in);
-
-		if (out != 1)
-			close(out);*/
+		if (in != 0)
+			if (close(in))
+				warnx("");
 
 		in = fd[0];
 
 		free(argv);
 	}
 
-	// Restore descriptors
-	dup2(STDIN_FILENO, 0);
-	dup2(STDOUT_FILENO, 1);
+	// TODO is necessary? Restore descriptors
+	/*dup2(STDIN_FILENO, 0);
+	dup2(STDOUT_FILENO, 1);*/
 }
 
 /** Fork a child process and execute it, parent waits for its end */
@@ -122,26 +120,34 @@ void
 exec_child_process(char *const argv[], int in, int out) {
 	pid_fork = fork(); // Create child process
 	if (pid_fork < 0) {
-		warn("fork");
+		warnx("");
 	} else if (pid_fork == 0) { // In child's execution
 
-		// TODO errchecks
 		if (in != 0) {
-			dup2(in, 0);
-			close(in);
+			if (dup2(in, 0) != 0)
+				warnx("");
+
+			if (close(in))
+				warnx("");
 		}
 
 		if (out != 1) {
-			dup2(out, 1);
-			close(out);
+			if (dup2(out, 1) != 1)
+				warnx("");
+
+			if (close(out))
+				warnx("");
 		}
 
 		execvp(argv[0], argv);
 
 		err(127,"%s", argv[0]);
 	} else { // Parent
-		if (out != 1)
-			close(out);
+		// TODO
+		if (out != 1) {
+			if (close(out))
+				warnx("");
+		}
 
 		wait_for_children();
 	}
