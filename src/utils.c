@@ -11,18 +11,23 @@
 /* On success 1 is returned, otherwise the shell is exited */
 size_t
 check_allocation(void *ptr) {
-	if (!ptr) {
+
+	if (!ptr)
 		err(2, "");
-	} else {
+
+	else
 		return (1);
-	}
 }
 
 size_t
 input_too_large(const char *input) {
+
 	if (strlen(input) > ARG_MAX) {
+
 		warnx("Input cannot be larger than %d bytes\n", ARG_MAX);
+
 		return (1);
 	}
+
 	return (0);
 }

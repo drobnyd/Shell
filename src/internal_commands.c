@@ -23,18 +23,25 @@ internal_cd(const char *dir) {
 	setenv("HOME", getenv("PWD"), 0);
 
 	char *target;
-	if (dir == NULL) { // Go to $HOME
+
+	if (dir == NULL) // Go to $HOME
 		target = strdup(getenv("HOME"));
-	} else if (strcmp(dir, "-") == 0) { // Go to the previous directory
+
+	else if (strcmp(dir, "-") == 0) // Go to the previous directory
 		target = strdup(getenv("OLDPWD"));
-	} else { // Else the argument is a path
+
+	else // Else the argument is a path
 		target = strdup(dir);
-	}
-	if (chdir(target) == 0) { // If successfully changed update env variables
+
+
+	if (chdir(target) == 0) {
+		// If successfully changed, update env variables
 		setenv("OLDPWD", getenv("PWD"), 1);
 		setenv("PWD", target, 1);
-	} else {
+
+	} else
 		warn("%s", target);
-	}
+
+
 	free(target);
 }

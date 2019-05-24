@@ -10,7 +10,7 @@
 %}
 
 %union {
-	char * str_val;
+	char *str_val;
 	int int_val;
 	struct command_list *command_list;
 	struct argument_list *argument_list;

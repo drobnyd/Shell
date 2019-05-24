@@ -5,7 +5,6 @@
 
 // Arguments
 
-/** Arguments of a command */
 typedef struct argument {
 	char *argument_value;
 
@@ -28,7 +27,10 @@ argument_list_init(void);
 void
 argument_list_insert_tail(argument_list *where, argument *what);
 
+
+
 // Redirection
+
 typedef struct redirection {
 	char *in_file;
 	// Mutually exclusive
@@ -43,6 +45,8 @@ redirection_init(void);
 
 void
 redirection_deallocate(redirection *what);
+
+
 
 // Commands
 
@@ -74,6 +78,8 @@ command_list_insert_head(command_list *where, struct command *what);
 
 void
 command_list_deallocate(command_list *what);
+
+
 
 // Pipes
 

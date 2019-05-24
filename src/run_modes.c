@@ -22,28 +22,36 @@ extern sigjmp_buf sigint_buf;
 size_t
 c_option_run(int argc, char *const *argv) {
 	int c;
+
 	while ((c = getopt(argc, argv, "c:")) != -1) {
+
 		switch (c) {
+
 		case 'c':
 			if (!input_too_large(optarg)) {
-				pipe_list *to_execute =
-					parse(optarg, 1);
+				pipe_list *to_execute = parse(optarg, 1);
+
 				// If error in parsing exit
 				if (get_parser_exit_code() != 0)
 					exit(get_parser_exit_code());
+
 				execute_input(to_execute);
+
 				internal_exit();
 			}
+
 		case '?':
 			if (optopt == 'c')
-			errx(1, "Option -%c requires an argument.", optopt);
-			else if (isprint (optopt))
-			errx(1, "Unknown option `-%c'.", optopt);
+				errx(1, "Option -%c requires an argument.", optopt);
+
+			else if (isprint(optopt))
+				errx(1, "Unknown option `-%c'.", optopt);
+
 			else
-			errx(1, "Unknown option character '\\x%x'.",
-					optopt);
+				errx(1, "Unknown option character '\\x%x'.", optopt);
 		}
 	}
+
 	return (0);
 }
 
@@ -51,9 +59,10 @@ c_option_run(int argc, char *const *argv) {
 void
 noninteractive_run(const char *filename) {
 	int fd = open(filename, O_RDONLY);
-	if (fd == -1) {
+
+	if (fd == -1)
 		err(2, "%s", filename);
-	}
+
 
 	char *buffer;
 	size_t nread;
@@ -62,7 +71,7 @@ noninteractive_run(const char *filename) {
 	buffer = malloc(sizeof (char));
 	check_allocation(buffer);
 
-	//Read input one by one
+	// Read input one by one
 	while ((nread = read(fd, &buffer[line_size], 1)) > 0) {
 	    // End of line
 		if (buffer[line_size] == '\n' || buffer[line_size] == 0x0) {
@@ -98,9 +107,8 @@ noninteractive_run(const char *filename) {
 	free(buffer);
 	close(fd);
 
-	if (nread == -1) {
+	if (nread == -1)
 		err(2, "%s", filename);
-	}
 
 	internal_exit();
 }
