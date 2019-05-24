@@ -42,13 +42,15 @@ c_option_run(int argc, char *const *argv) {
 
 		case '?':
 			if (optopt == 'c')
-				errx(1, "Option -%c requires an argument.", optopt);
+				errx(1, "Option -%c requires an argument.",
+						optopt);
 
 			else if (isprint(optopt))
 				errx(1, "Unknown option `-%c'.", optopt);
 
 			else
-				errx(1, "Unknown option character '\\x%x'.", optopt);
+				errx(1, "Unknown option character '\\x%x'.",
+						optopt);
 		}
 	}
 
@@ -63,23 +65,23 @@ noninteractive_run(const char *filename) {
 	if (fd == -1)
 		err(2, "%s", filename);
 
-
-	char *buffer;
-	size_t nread;
+	size_t n_read;
 	ssize_t line_size = 0;
 	size_t line_num = 1;
-	buffer = malloc(sizeof (char));
+
+	char *buffer = malloc(sizeof (char));
 	check_allocation(buffer);
 
 	// Read input one by one
-	while ((nread = read(fd, &buffer[line_size], 1)) > 0) {
+	while ((n_read = read(fd, &buffer[line_size], 1)) > 0) {
 	    // End of line
 		if (buffer[line_size] == '\n' || buffer[line_size] == 0x0) {
+
 			buffer[line_size] = '\0';
 
 			if (!input_too_large(buffer)) {
-				pipe_list *to_execute =
-					parse(buffer, line_num);
+				pipe_list *to_execute = parse(buffer, line_num);
+
 				// If error in parsing exit
 				if (get_parser_exit_code() != 0)
 					exit(get_parser_exit_code());
@@ -89,25 +91,29 @@ noninteractive_run(const char *filename) {
 
 			// Reset everything and move on the next line
 			free(buffer);
+
 			line_num++;
 			line_size = 0;
+
 			buffer = malloc(sizeof (char));
 			check_allocation(buffer);
+
 		} else {
 			line_size++;
 			// Allocate space for a new char. New buffer size is
 			// (line_size + 1) because line_size is indexed from 0
 			char *tmp = realloc(buffer,
-				(line_size + 1) * sizeof (char));
+					(line_size + 1) * sizeof (char));
 			check_allocation(tmp);
 			buffer = tmp;
 		}
 	}
+
 	// Clean up
 	free(buffer);
 	close(fd);
 
-	if (nread == -1)
+	if (n_read == -1)
 		err(2, "%s", filename);
 
 	internal_exit();
@@ -117,32 +123,43 @@ void
 interactive_mode_loop() {
 	// Register sigint handler
 	set_sigint_handler();
+
 	// Configure readline to auto-complete paths when the tab key is hit.
 	rl_bind_key('\t', rl_complete);
+
 	char *input, *cwd, shell_prompt[100];
+
 	while (1) { // While not exited by ^D
 		// Create prompt string from user name
 		// and current working directory.
 		cwd = getcwd(NULL, 0);
+
 		snprintf(shell_prompt, sizeof (shell_prompt), "mysh:%s$ ", cwd);
+
 		// Set return point for case of ^C
 		while (sigsetjmp(sigint_buf, 1) != 0) {
 		}
+
 		// Display prompt and read input
 		input = readline(shell_prompt);
+
 		// Check for EOF(^D)
 		if (!input) // If EOF, exit with the last command's value
 			internal_exit();
+
 		if (!input_too_large(input)) {
 			pipe_list *to_execute = parse(input, 1);
+
 			// If error in parsing don't execute the line
 			if (get_parser_exit_code() != 0)
 				set_exit_code(get_parser_exit_code());
 			else
 				execute_input(to_execute);
+
 			// Add input to history.
 			add_history(input);
 		}
+
 		free(cwd);
 		free(input);
 	}
