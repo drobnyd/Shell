@@ -19,17 +19,17 @@ sigjmp_buf sigint_buf;
 
 /** Execute one by one commands stored in to_execute */
 void
-execute_input(struct pipe_handle *to_execute) {
+execute_input(pipe_list *to_execute) {
 
 	if (!to_execute)
 		return; // Nothing to execute, shouldn't happen
 
-	struct commands_handle *cp;
+	command_list *cp;
 	STAILQ_FOREACH(cp, &to_execute->head, entries) {
 		execute_commands_in_pipe(cp);
 	}
 
-	deallocate_pipe(to_execute);
+	pipe_list_deallocate(to_execute);
 }
 
 /** Loads command structure to argv executable by execvp */
@@ -59,7 +59,7 @@ load_command_to_argv(struct command *cc) {
 }
 
 void
-redirect(struct redirection *redirection, int *in, int *out, int *fd) {
+redirect(redirection *redirection, int *in, int *out, int *fd) {
 	// Redirection
 	if (redirection != NULL) {
 		if (redirection->in_file != NULL) {
@@ -80,7 +80,7 @@ redirect(struct redirection *redirection, int *in, int *out, int *fd) {
 }
 
 void
-execute_commands_in_pipe(struct commands_handle *to_execute) {
+execute_commands_in_pipe(command_list *to_execute) {
 
 	if (!to_execute)
 		return; // Nothing to execute, shouldn't happen

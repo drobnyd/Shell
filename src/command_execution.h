@@ -4,10 +4,10 @@
 #include "data_structures.h"
 
 void
-execute_input(struct pipe_handle *to_execute);
+execute_input(pipe_list *to_execute);
 
 void
-execute_commands_in_pipe(struct commands_handle *to_execute);
+execute_commands_in_pipe(command_list *to_execute);
 
 size_t
 exec_internal_command(char *const argv[]);

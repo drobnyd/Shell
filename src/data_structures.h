@@ -8,91 +8,93 @@
 /** Arguments of a command */
 struct argument {
 	char *argument_value;
+
 	STAILQ_ENTRY(argument) entries;
 };
 
 struct argument *
 init_argument(void);
 
-struct arguments_handle {
-	STAILQ_HEAD(argument_list, argument) head;
-};
+typedef struct argument_list {
+	STAILQ_HEAD(arguments, argument) head;
+} argument_list;
 
 void
-deallocate_arguments(struct arguments_handle *what);
+argument_list_deallocate(argument_list *what);
 
-struct arguments_handle *
-init_argument_list(void);
+argument_list *
+argument_list_init(void);
 
 void
-argument_list_insert_tail(struct arguments_handle *where,
+argument_list_insert_tail(argument_list *where,
 struct argument *what);
 
 // Redirection
-struct redirection {
+typedef struct redirection {
 	char *in_file;
 	// Mutually exclusive
 	/* File to append output to */
 	char *out_file_a;
 	/* File to rewrite with output */
 	char *out_file_r;
-};
+} redirection;
 
-struct redirection *
-init_redirection(void);
+redirection *
+redirection_init(void);
 
 void
-deallocate_redirection(struct redirection *what);
+redirection_deallocate(redirection *what);
 
 // Commands
 
 /** Command and its arguments */
 struct command {
 	char *command_name;
-	struct arguments_handle *arguments_handle;
-	struct redirection *redirection;
+	argument_list *arguments_handle;
+	redirection *redirection;
 	STAILQ_ENTRY(command) entries;
 };
 
 struct command *
-init_command(void);
+command_init(void);
 
 void
-deallocate_command(struct command *what);
+command_deallocate(struct command *what);
 
-struct commands_handle {
-	STAILQ_HEAD(command_list, command) head;
-	STAILQ_ENTRY(commands_handle) entries;
-};
+typedef struct command_list {
+	STAILQ_HEAD(commands, command) head;
 
-struct commands_handle *
-init_command_list(void);
+	STAILQ_ENTRY(command_list) entries;
+} command_list;
 
-void
-command_list_insert_head(struct commands_handle *where, struct command *what);
+command_list *
+command_list_init(void);
 
 void
-deallocate_commands(struct commands_handle *what);
+command_list_insert_head(command_list *where, struct command *what);
+
+void
+command_list_deallocate(command_list *what);
 
 // Pipes
 
 /** Colon of commands delimited by a pipe */
-struct pipe_handle {
-	STAILQ_HEAD(composite_list, commands_handle) head;
-};
+typedef struct pipe_list {
+	STAILQ_HEAD(pipes, command_list) head;
+} pipe_list;
 
-struct pipe_handle *
-init_pipe_list(void);
-
-void
-pipe_list_insert_head(struct pipe_handle *where,
-struct commands_handle *what);
+pipe_list *
+pipe_list_init(void);
 
 void
-pipe_list_insert_simple_head(struct pipe_handle *where,
+pipe_list_insert_head(pipe_list *where,
+command_list *what);
+
+void
+pipe_list_insert_simple_head(pipe_list *where,
 struct command *what);
 
 void
-deallocate_pipe(struct pipe_handle *what);
+pipe_list_deallocate(pipe_list *what);
 
 #endif

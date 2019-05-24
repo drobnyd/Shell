@@ -26,7 +26,7 @@ c_option_run(int argc, char *const *argv) {
 		switch (c) {
 		case 'c':
 			if (!input_too_large(optarg)) {
-				struct pipe_handle *to_execute =
+				pipe_list *to_execute =
 					parse(optarg, 1);
 				// If error in parsing exit
 				if (get_parser_exit_code() != 0)
@@ -69,7 +69,7 @@ noninteractive_run(const char *filename) {
 			buffer[line_size] = '\0';
 
 			if (!input_too_large(buffer)) {
-				struct pipe_handle *to_execute =
+				pipe_list *to_execute =
 					parse(buffer, line_num);
 				// If error in parsing exit
 				if (get_parser_exit_code() != 0)
@@ -126,7 +126,7 @@ interactive_mode_loop() {
 		if (!input) // If EOF, exit with the last command's value
 			internal_exit();
 		if (!input_too_large(input)) {
-			struct pipe_handle *to_execute = parse(input, 1);
+			pipe_list *to_execute = parse(input, 1);
 			// If error in parsing don't execute the line
 			if (get_parser_exit_code() != 0)
 				set_exit_code(get_parser_exit_code());

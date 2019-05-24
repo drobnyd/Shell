@@ -13,20 +13,20 @@ init_argument(void) {
 	return (argument);
 }
 
-struct arguments_handle *
-init_argument_list(void) {
-	struct arguments_handle *arguments =
-			malloc(sizeof (struct arguments_handle));
+argument_list *
+argument_list_init(void) {
+	argument_list *arguments =
+			malloc(sizeof (argument_list));
 	check_allocation(arguments);
 
 	STAILQ_INIT(&arguments->head);
 	return (arguments);
 }
 
-struct redirection *
-init_redirection(void) {
-	struct redirection *redirection =
-			malloc(sizeof (struct redirection));
+redirection *
+redirection_init(void) {
+	redirection *redirection =
+			malloc(sizeof (redirection));
 	check_allocation(redirection);
 
 	redirection->in_file = NULL;
@@ -36,7 +36,7 @@ init_redirection(void) {
 }
 
 struct command *
-init_command(void) {
+command_init(void) {
 	struct command *command =
 		malloc(sizeof (struct command));
 	check_allocation(command);
@@ -47,20 +47,20 @@ init_command(void) {
 	return (command);
 }
 
-struct commands_handle *
-init_command_list(void) {
-	struct commands_handle *commands =
-			malloc(sizeof (struct commands_handle));
+command_list *
+command_list_init(void) {
+	command_list *commands =
+			malloc(sizeof (command_list));
 	check_allocation(commands);
 
 	STAILQ_INIT(&commands->head);
 	return (commands);
 }
 
-struct pipe_handle *
-init_pipe_list(void) {
-	struct pipe_handle *commands =
-			malloc(sizeof (struct pipe_handle));
+pipe_list *
+pipe_list_init(void) {
+	pipe_list *commands =
+			malloc(sizeof (pipe_list));
 	check_allocation(commands);
 
 	STAILQ_INIT(&commands->head);
@@ -68,32 +68,32 @@ init_pipe_list(void) {
 }
 
 void
-argument_list_insert_tail(struct arguments_handle *where,
+argument_list_insert_tail(argument_list *where,
 	struct argument *what) {
 	STAILQ_INSERT_TAIL(&where->head, what, entries);
 }
 
 void
-command_list_insert_head(struct commands_handle *where, struct command *what) {
+command_list_insert_head(command_list *where, struct command *what) {
 	STAILQ_INSERT_HEAD(&where->head, what, entries);
 }
 
 void
-pipe_list_insert_head(struct pipe_handle *where,
-	struct commands_handle *what){
+pipe_list_insert_head(pipe_list *where,
+	command_list *what){
 		STAILQ_INSERT_HEAD(&where->head, what, entries);
 }
 
 void
-pipe_list_insert_simple_head(struct pipe_handle *where,
+pipe_list_insert_simple_head(pipe_list *where,
 	struct command *what){
-		struct commands_handle *to_add = init_command_list();
+		command_list *to_add = command_list_init();
 		command_list_insert_head(to_add, what);
 		pipe_list_insert_head(where, to_add);
 }
 
 void
-deallocate_arguments(struct arguments_handle *what) {
+argument_list_deallocate(argument_list *what) {
 	struct argument *n1, *n2;
 	n1 = STAILQ_FIRST(&what->head);
 	while (n1 != NULL) {
@@ -106,7 +106,7 @@ deallocate_arguments(struct arguments_handle *what) {
 }
 
 void
-deallocate_commands(struct commands_handle *what) {
+command_list_deallocate(command_list *what) {
 	if (what == NULL)
 		return;
 
@@ -115,7 +115,7 @@ deallocate_commands(struct commands_handle *what) {
 
 	while (n1 != NULL) {
 		n2 = STAILQ_NEXT(n1, entries);
-		deallocate_command(n1);
+		command_deallocate(n1);
 		n1 = n2;
 	}
 
@@ -123,16 +123,16 @@ deallocate_commands(struct commands_handle *what) {
 }
 
 void
-deallocate_pipe(struct pipe_handle *what){
+pipe_list_deallocate(pipe_list *what){
 	if (what == NULL)
 		return;
 
-	struct commands_handle *n1, *n2;
+	command_list *n1, *n2;
 	n1 = STAILQ_FIRST(&what->head);
 
 	while (n1 != NULL) {
 		n2 = STAILQ_NEXT(n1, entries);
-		deallocate_commands(n1);
+		command_list_deallocate(n1);
 		n1 = n2;
 	}
 
@@ -140,18 +140,18 @@ deallocate_pipe(struct pipe_handle *what){
 }
 
 void
-deallocate_command(struct command *what){
+command_deallocate(struct command *what){
 	if (what == NULL)
 		return;
 
-	deallocate_arguments(what->arguments_handle);
-	deallocate_redirection(what->redirection);
+	argument_list_deallocate(what->arguments_handle);
+	redirection_deallocate(what->redirection);
 	free(what->command_name);
 	free(what);
 }
 
 void
-deallocate_redirection(struct redirection *what){
+redirection_deallocate(redirection *what){
 	if (what == NULL)
 		return;
 

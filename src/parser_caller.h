@@ -5,7 +5,7 @@
 
 /* Methods for interaction with parser */
 
-struct pipe_handle *
+pipe_list *
 parse(char *input, size_t line);
 
 size_t
