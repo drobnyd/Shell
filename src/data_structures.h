@@ -6,13 +6,13 @@
 // Arguments
 
 /** Arguments of a command */
-struct argument {
+typedef struct argument {
 	char *argument_value;
 
 	STAILQ_ENTRY(argument) entries;
-};
+} argument;
 
-struct argument *
+argument *
 init_argument(void);
 
 typedef struct argument_list {
@@ -26,8 +26,7 @@ argument_list *
 argument_list_init(void);
 
 void
-argument_list_insert_tail(argument_list *where,
-struct argument *what);
+argument_list_insert_tail(argument_list *where, argument *what);
 
 // Redirection
 typedef struct redirection {

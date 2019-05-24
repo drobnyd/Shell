@@ -149,13 +149,13 @@ arguments: /* Lambda */ {
 		$$ = argument_list_init();
 	}
 	| arguments WORD { 
-		struct argument *to_add = init_argument();
+		argument *to_add = init_argument();
 		to_add->argument_value = $2;
 		argument_list_insert_tail($1, to_add);
 		$$ = $1;
 	}
 	| arguments QUOTED { 
-		struct argument *to_add = init_argument();
+		argument *to_add = init_argument();
 		to_add->argument_value = $2;
 		argument_list_insert_tail($1, to_add);
 		$$ = $1;

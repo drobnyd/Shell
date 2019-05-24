@@ -3,10 +3,10 @@
 #include <stdlib.h>
 
 
-struct argument *
+argument *
 init_argument(void) {
-	struct argument *argument =
-		malloc(sizeof (struct argument));
+	argument *argument =
+		malloc(sizeof (argument));
 	check_allocation(argument);
 
 	argument->argument_value = NULL;
@@ -69,7 +69,7 @@ pipe_list_init(void) {
 
 void
 argument_list_insert_tail(argument_list *where,
-	struct argument *what) {
+	argument *what) {
 	STAILQ_INSERT_TAIL(&where->head, what, entries);
 }
 
@@ -94,7 +94,7 @@ pipe_list_insert_simple_head(pipe_list *where,
 
 void
 argument_list_deallocate(argument_list *what) {
-	struct argument *n1, *n2;
+	argument *n1, *n2;
 	n1 = STAILQ_FIRST(&what->head);
 	while (n1 != NULL) {
 		n2 = STAILQ_NEXT(n1, entries);

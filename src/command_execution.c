@@ -42,7 +42,7 @@ load_command_to_argv(struct command *cc) {
 	check_allocation(argv);
 	argv[i++] = cc->command_name;
 
-	struct argument *ca;
+	argument *ca;
 	STAILQ_FOREACH(ca, &cc->arguments_handle->head, entries) {
 		tmp = realloc(argv, (i+1) * sizeof (char *));
 		check_allocation(tmp);
