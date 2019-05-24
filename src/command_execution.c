@@ -11,8 +11,10 @@
 #include <err.h>
 #include <fcntl.h>
 
-/* -1 if the process has no children. */
-/* Otherwise contains a positive number with child's PID */
+/*
+ * -1 if the process has no children.
+ * Otherwise contains a positive number with child's PID
+ */
 pid_t pid_fork = -1;
 size_t exit_code = 0;
 sigjmp_buf sigint_buf;
@@ -129,7 +131,7 @@ exec_child_process(char *const argv[], int in, int out) {
 	if (pid_fork < 0)
 		warn("");
 
-	else if (pid_fork == 0) { // In child's execution
+	else if (pid_fork == 0) { // Child
 
 		if (in != 0) {
 			if (dup2(in, 0) != 0)
@@ -173,7 +175,6 @@ wait_for_children() {
 	if ((waitpid(pid_fork, &status, 0)) == -1)
 		warn("PID:%d ", pid_fork);
 
-
 	// Collect child's exit value and set it as the shell's exit value
 	if (WIFEXITED(status))
 		exit_code = WEXITSTATUS(status);
@@ -188,11 +189,10 @@ wait_for_children() {
 /* Returns 0 if no internal command was executed, otherwise 1 */
 size_t
 exec_internal_command(char *const argv[]) {
-	if (strcmp(argv[0], "exit") == 0) {
-
+	if (strcmp(argv[0], "exit") == 0)
 		internal_exit();
 
-	} else if (strcmp(argv[0], "cd") == 0) {
+	else if (strcmp(argv[0], "cd") == 0) {
 		internal_cd(argv[1]);
 
 		return (1);
