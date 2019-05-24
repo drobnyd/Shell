@@ -12,9 +12,9 @@
 %union {
 	char * str_val;
 	int int_val;
-	struct command_list *commands_handle;
-	struct argument_list *arguments_handle;
-	struct pipe_list *pipe_handle;
+	struct command_list *command_list;
+	struct argument_list *argument_list;
+	struct pipe_list *pipe_list;
 	struct command *command_ptr;
 	struct redirection *redirection_ptr;
 }
@@ -38,10 +38,10 @@
 %destructor { pipe_list_deallocate($$); } command_line
 %destructor { redirection_deallocate($$); } redirection
 
-%type<commands_handle> pipe
-%type<arguments_handle> arguments
+%type<command_list> pipe
+%type<argument_list> arguments
 %type<command_ptr> command
-%type<pipe_handle> command_line
+%type<pipe_list> command_line
 %type<redirection_ptr> redirection
 %%
 
@@ -134,14 +134,14 @@ command:
 	WORD arguments redirection {
 		$$ = command_init();
 		$$->command_name = $1;
-		$$->arguments_handle = $2;
+		$$->argument_list = $2;
 		$$->redirection = $3;
 	}
 	;
 	| WORD arguments {
 		$$ = command_init();
 		$$->command_name = $1;
-		$$->arguments_handle = $2;
+		$$->argument_list = $2;
 	}
 	;
 

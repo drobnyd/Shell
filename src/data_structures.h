@@ -46,11 +46,11 @@ redirection_deallocate(redirection *what);
 
 // Commands
 
-/** Command and its arguments */
 struct command {
 	char *command_name;
-	argument_list *arguments_handle;
+	argument_list *argument_list;
 	redirection *redirection;
+
 	STAILQ_ENTRY(command) entries;
 };
 
@@ -77,7 +77,6 @@ command_list_deallocate(command_list *what);
 
 // Pipes
 
-/** Colon of commands delimited by a pipe */
 typedef struct pipe_list {
 	STAILQ_HEAD(pipes, command_list) head;
 } pipe_list;

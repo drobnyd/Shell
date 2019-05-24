@@ -42,7 +42,7 @@ command_init(void) {
 	check_allocation(command);
 
 	command->command_name = NULL;
-	command->arguments_handle = NULL;
+	command->argument_list = NULL;
 	command->redirection = NULL;
 	return (command);
 }
@@ -144,7 +144,7 @@ command_deallocate(struct command *what){
 	if (what == NULL)
 		return;
 
-	argument_list_deallocate(what->arguments_handle);
+	argument_list_deallocate(what->argument_list);
 	redirection_deallocate(what->redirection);
 	free(what->command_name);
 	free(what);
