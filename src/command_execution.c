@@ -103,7 +103,7 @@ execute_commands_in_pipe(command_list *to_execute) {
 
 		if (STAILQ_NEXT(cc, entries) != NULL) {
 			if (pipe(fd))
-				err(2, "");
+				err(2, NULL);
 
 			next_in = fd[0];
 			out = fd[1];
@@ -129,24 +129,24 @@ exec_child_process(char *const argv[], int in, int out) {
 	pid_fork = fork(); // Create child process
 
 	if (pid_fork < 0)
-		warn("");
+		warn(NULL);
 
 	else if (pid_fork == 0) { // Child
 
 		if (in != 0) {
 			if (dup2(in, 0) != 0)
-				warn("");
+				warn(NULL);
 
 			if (close(in))
-				warn("");
+				warn(NULL);
 		}
 
 		if (out != 1) {
 			if (dup2(out, 1) != 1)
-				warn("");
+				warn(NULL);
 
 			if (close(out))
-				warn("");
+				warn(NULL);
 		}
 
 		execvp(argv[0], argv);
@@ -157,11 +157,11 @@ exec_child_process(char *const argv[], int in, int out) {
 		// Parent is not writing nor reading from a pipe
 		if (in != 0)
 			if (close(in))
-				warn("");
+				warn(NULL);
 
 		if (out != 1)
 			if (close(out))
-				warn("");
+				warn(NULL);
 
 		wait_for_children();
 	}
