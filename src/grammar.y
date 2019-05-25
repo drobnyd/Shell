@@ -99,15 +99,23 @@ pipe:
 
 redirection:
  	redirection IN_REDIRECTION WORD {
+ 		free($1->in_file);
+
  		$1->in_file = $3;
  		$$ = $1;
 	}
 	| redirection OUT_REDIRECTION WORD {
+		free($1->out_file_r);
+		free($1->out_file_a);
+
 		$1->out_file_r = $3;
                 $1->out_file_a = NULL;
                 $$ = $1;
 	}
 	| redirection OUT_REDIRECTION OUT_REDIRECTION WORD {
+		free($1->out_file_r);
+        	free($1->out_file_a);
+
 		$$->out_file_r = NULL;
                 $$->out_file_a = $4;
                 $$ = $1;
