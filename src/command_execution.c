@@ -64,25 +64,29 @@ load_command_to_argv(struct command *cc) {
 }
 
 void
-redirect(redirection *redirection, int *in, int *out, int *fd) {
+redirect(redirection *redirection) {
 	if (!redirection)
 		return;
 
+	// TODO errchecks
 	if (redirection->in_file != NULL) {
-		close(*in); // No more needed
-		*in = open(redirection->in_file, O_RDONLY);
+		int in = open(redirection->in_file, O_RDONLY);
+
+		dup2(in, 0);
 	}
 
 	if (redirection->out_file_a != NULL) {
-		close(fd[1]); // Nothing will be written to the pipe
-		*out = open(redirection->out_file_a,
+		int out = open(redirection->out_file_a,
 				O_WRONLY | O_CREAT | O_APPEND, 0666);
+
+		dup2(out, 1);
 	}
 
 	if (redirection->out_file_r != NULL) {
-		close(fd[1]); // Nothing will be written to the pipe
-		*out = open(redirection->out_file_r,
+		int out = open(redirection->out_file_r,
 				O_WRONLY | O_CREAT | O_TRUNC, 0666);
+
+		dup2(out, 1);
 	}
 }
 
@@ -110,10 +114,8 @@ execute_commands_in_pipe(command_list *to_execute) {
 		} else // Is the last one, write out
 			out = STDOUT_FILENO;
 
-		redirect(cc->redirection, &in, &out, fd);
-
 		if (!exec_internal_command(argv))
-			exec_child_process(argv, in, out);
+			exec_child_process(argv, in, out, cc->redirection);
 
 		in = next_in;
 
@@ -124,7 +126,7 @@ execute_commands_in_pipe(command_list *to_execute) {
 
 /* Fork a child process and execute it, parent waits for its end */
 void
-exec_child_process(char *const argv[], int in, int out) {
+exec_child_process(char *const argv[], int in, int out, redirection *redir) {
 
 	pid_fork = fork(); // Create child process
 
@@ -148,6 +150,8 @@ exec_child_process(char *const argv[], int in, int out) {
 			if (close(out))
 				warn(NULL);
 		}
+
+		redirect(redir);
 
 		execvp(argv[0], argv);
 

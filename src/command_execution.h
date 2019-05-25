@@ -16,7 +16,7 @@ void
 set_sigint_handler(void);
 
 void
-exec_child_process(char *const argv[], int in, int out);
+exec_child_process(char *const argv[], int in, int out, redirection *redir);
 
 void
 wait_for_children(void);
