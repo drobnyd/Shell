@@ -68,25 +68,42 @@ redirect(redirection *redirection) {
 	if (!redirection)
 		return;
 
-	// TODO errchecks
 	if (redirection->in_file != NULL) {
 		int in = open(redirection->in_file, O_RDONLY);
 
-		dup2(in, 0);
+		if (in != 0) {
+			if (dup2(in, 0) != 0)
+				warn(NULL);
+
+			if (close(in))
+				warn(NULL);
+		}
 	}
 
 	if (redirection->out_file_a != NULL) {
 		int out = open(redirection->out_file_a,
 				O_WRONLY | O_CREAT | O_APPEND, 0666);
 
-		dup2(out, 1);
+		if (out != 1) {
+			if (dup2(out, 1) != 1)
+				warn(NULL);
+
+			if (close(out))
+				warn(NULL);
+		}
 	}
 
 	if (redirection->out_file_r != NULL) {
 		int out = open(redirection->out_file_r,
 				O_WRONLY | O_CREAT | O_TRUNC, 0666);
 
-		dup2(out, 1);
+		if (out != 1) {
+			if (dup2(out, 1) != 1)
+				warn(NULL);
+
+			if (close(out))
+				warn(NULL);
+		}
 	}
 }
 
@@ -150,6 +167,7 @@ exec_child_process(char *const argv[], int in, int out, redirection *redir) {
 			if (close(out))
 				warn(NULL);
 		}
+
 
 		redirect(redir);
 
