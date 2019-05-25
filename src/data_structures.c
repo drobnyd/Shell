@@ -5,34 +5,34 @@
 
 argument *
 init_argument(void) {
-	argument *argument = malloc(sizeof (argument));
-	check_allocation(argument);
+	argument *arg = malloc(sizeof (argument));
+	check_allocation(arg);
 
-	argument->argument_value = NULL;
+	arg->argument_value = NULL;
 
-	return (argument);
+	return (arg);
 }
 
 argument_list *
 argument_list_init(void) {
-	argument_list *arguments = malloc(sizeof (argument_list));
-	check_allocation(arguments);
+	argument_list *args = malloc(sizeof (argument_list));
+	check_allocation(args);
 
-	STAILQ_INIT(&arguments->head);
+	STAILQ_INIT(&args->head);
 
-	return (arguments);
+	return (args);
 }
 
 redirection *
 redirection_init(void) {
-	redirection *redirection = malloc(sizeof (redirection));
-	check_allocation(redirection);
+	redirection *redirect = malloc(sizeof (redirection));
+	check_allocation(redirect);
 
-	redirection->in_file = NULL;
-	redirection->out_file_r = NULL;
-	redirection->out_file_a = NULL;
+	redirect->in_file = NULL;
+	redirect->out_file_r = NULL;
+	redirect->out_file_a = NULL;
 
-	return (redirection);
+	return (redirect);
 }
 
 struct command *
@@ -59,16 +59,17 @@ command_list_init(void) {
 
 pipe_list *
 pipe_list_init(void) {
-	pipe_list *commands = malloc(sizeof (pipe_list));
-	check_allocation(commands);
+	pipe_list *pipes = malloc(sizeof (pipe_list));
+	check_allocation(pipes);
 
-	STAILQ_INIT(&commands->head);
+	STAILQ_INIT(&pipes->head);
 
-	return (commands);
+	return (pipes);
 }
 
 void
 argument_list_insert_tail(argument_list *where, argument *what) {
+
 	STAILQ_INSERT_TAIL(&where->head, what, entries);
 }
 
