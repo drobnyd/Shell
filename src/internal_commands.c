@@ -42,13 +42,16 @@ internal_cd(const char **argv) {
 		target = strdup(dir);
 	}
 
-	if (chdir(target) == 0) {
+	int chdir_res = chdir(target);
+	if (chdir_res == 0) {
 		// If successfully changed, update env variables
 		setenv("OLDPWD", getenv("PWD"), 1);
 		setenv("PWD", target, 1);
 
-	} else
+	} else {
 		warn("%s", target);
+		exit_code = chdir_res;
+	}
 
 
 	free(target);
