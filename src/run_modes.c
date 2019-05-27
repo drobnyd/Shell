@@ -39,7 +39,7 @@ c_option_run(int argc, char *const *argv) {
 
 				internal_exit();
 			}
-
+			break; // Should be never reached
 		case '?':
 			if (optopt == 'c')
 				errx(1, "Option -%c requires an argument.",
