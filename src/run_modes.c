@@ -1,4 +1,3 @@
-#include "run_modes.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -7,11 +6,12 @@
 #include <readline/history.h>
 #include <setjmp.h>
 #include <fcntl.h>
+#include <err.h>
 #include "command_execution.h"
 #include "data_structures.h"
 #include "parser_caller.h"
 #include "utils.h"
-#include <err.h>
+#include "run_modes.h"
 
 /* Buffer for capturing a state of the program and then its restoration */
 extern sigjmp_buf sigint_buf;
@@ -44,10 +44,8 @@ c_option_run(int argc, char *const *argv) {
 			if (optopt == 'c')
 				errx(1, "Option -%c requires an argument.",
 						optopt);
-
 			else if (isprint(optopt))
 				errx(1, "Unknown option `-%c'.", optopt);
-
 			else
 				errx(1, "Unknown option character '\\x%x'.",
 						optopt);
@@ -65,7 +63,7 @@ noninteractive_run(const char *filename) {
 	if (fd == -1)
 		err(2, "%s", filename);
 
-	size_t n_read;
+	int n_read;
 	ssize_t line_size = 0;
 	size_t line_num = 1;
 
@@ -144,7 +142,7 @@ interactive_mode_loop() {
 		input = readline(shell_prompt);
 
 		// Check for EOF(^D)
-		if (!input) // If EOF, exit with the last command's value
+		if (input == NULL) // If EOF, exit with the last command's value
 			internal_exit();
 
 		if (!input_too_large(input)) {

@@ -1,6 +1,6 @@
+#include <stdlib.h>
 #include "data_structures.h"
 #include "utils.h"
-#include <stdlib.h>
 
 
 argument *
@@ -88,15 +88,15 @@ pipe_list_insert_head(pipe_list *where, command_list *what) {
 void
 pipe_list_insert_simple_head(pipe_list *where, struct command *what) {
 
-		command_list *to_add = command_list_init();
-		command_list_insert_head(to_add, what);
+	command_list *to_add = command_list_init();
+	command_list_insert_head(to_add, what);
 
-		pipe_list_insert_head(where, to_add);
+	pipe_list_insert_head(where, to_add);
 }
 
 void
 argument_list_deallocate(argument_list *what) {
-	if (!what)
+	if (what == NULL)
 		return;
 
 	argument *n1, *n2;
@@ -115,7 +115,7 @@ argument_list_deallocate(argument_list *what) {
 
 void
 command_list_deallocate(command_list *what) {
-	if (!what)
+	if (what == NULL)
 		return;
 
 	struct command *n1, *n2;
@@ -134,7 +134,7 @@ command_list_deallocate(command_list *what) {
 
 void
 pipe_list_deallocate(pipe_list *what) {
-	if (!what)
+	if (what == NULL)
 		return;
 
 	command_list *n1, *n2;
@@ -153,7 +153,7 @@ pipe_list_deallocate(pipe_list *what) {
 
 void
 command_deallocate(struct command *what) {
-	if (!what)
+	if (what == NULL)
 		return;
 
 	argument_list_deallocate(what->argument_list);
@@ -166,7 +166,7 @@ command_deallocate(struct command *what) {
 
 void
 redirection_deallocate(redirection *what) {
-	if (!what)
+	if (what == NULL)
 		return;
 
 	free(what->in_file);

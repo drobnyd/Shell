@@ -12,11 +12,10 @@
 size_t
 check_allocation(void *ptr) {
 
-	if (!ptr)
+	if (ptr == NULL)
 		err(2, NULL);
 
-	else
-		return (1);
+	return (1);
 }
 
 size_t

@@ -1,6 +1,3 @@
-#include "command_execution.h"
-#include "internal_commands.h"
-#include "utils.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/queue.h>
@@ -10,6 +7,9 @@
 #include <setjmp.h>
 #include <err.h>
 #include <fcntl.h>
+#include "command_execution.h"
+#include "internal_commands.h"
+#include "utils.h"
 
 /*
  * -1 if the process has no children.
@@ -23,7 +23,7 @@ sigjmp_buf sigint_buf;
 void
 execute_input(pipe_list *to_execute) {
 
-	if (!to_execute)
+	if (to_execute == NULL)
 		return; // Nothing to execute, shouldn't happen
 
 	command_list *cp;
@@ -65,7 +65,7 @@ load_command_to_argv(struct command *cc) {
 
 void
 redirect(redirection *redirection) {
-	if (!redirection)
+	if (redirection == NULL)
 		return;
 
 	if (redirection->in_file != NULL) {
@@ -110,7 +110,7 @@ redirect(redirection *redirection) {
 void
 execute_commands_in_pipe(command_list *to_execute) {
 
-	if (!to_execute)
+	if (to_execute == NULL)
 		return; // Nothing to execute, shouldn't happen
 
 	struct command *cc;
@@ -149,7 +149,6 @@ exec_child_process(char *const argv[], int in, int out, redirection *redir) {
 
 	if (pid_fork < 0)
 		warn(NULL);
-
 	else if (pid_fork == 0) { // Child
 
 		if (in != 0) {
@@ -200,7 +199,6 @@ wait_for_children() {
 	// Collect child's exit value and set it as the shell's exit value
 	if (WIFEXITED(status))
 		exit_code = WEXITSTATUS(status);
-
 	else if (WIFSIGNALED(status))
 		exit_code = WTERMSIG(status) + 128;
 
@@ -213,9 +211,8 @@ size_t
 exec_internal_command(char *const argv[]) {
 	if (strcmp(argv[0], "exit") == 0)
 		internal_exit();
-
 	else if (strcmp(argv[0], "cd") == 0) {
-		internal_cd(argv[1]);
+		internal_cd(argv);
 
 		return (1);
 	}
@@ -231,7 +228,7 @@ set_exit_code(size_t val) {
 
 /* Handling of SIGINT signal of the shell */
 void
-handle_sigint(int signal) {
+handle_sigint() {
 	if (pid_fork > 1) {
 		// A child exists, propagate the signal
 		warnx("Killed by signal %d.", SIGINT);

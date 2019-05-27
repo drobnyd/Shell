@@ -1,5 +1,5 @@
 .DEFAULT_GOAL = mysh
-CFLAGS = -g -Wall -Wpedantic
+CFLAGS = -g -Wextra -Wall -Wpedantic
 CC = cc
 BISON = grammar
 O_FILES = command_execution.o data_structures.o run_modes.o parser_caller.o internal_commands.o utils.o 

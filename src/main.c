@@ -11,7 +11,6 @@ main(int argc, char **argv) {
 		// If -c was not applicable try other possibilities
 		if (argc == 1)
 			interactive_mode_loop();
-
 		else if (argc == 2)
 			noninteractive_run(argv[1]);
 
